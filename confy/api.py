@@ -17,13 +17,12 @@ class Loader(object):
     def __init__(self, file=None, syspaths=None, config_extention=None):
         self._file = file
         self._syspaths = syspaths or ['.']
-        self.pathjoin = os.path.join
         self.conf_config_extention = config_extention or self.__class__.conf_config_extention
 
         if self._file:
-            self.from_config_root = create_path_function(self._file)
+            self.rootpath = create_path_function(self._file)
         else:
-            self.from_config_root = None
+            self.rootpath = None
 
         self._factories = {}
 
@@ -47,9 +46,9 @@ class Loader(object):
     def _get_syspath(self, paths=None):
         syspaths = paths or []
         syspaths.extend(self._syspaths)
-        if not self.from_config_root:
+        if not self.rootpath:
             return []
-        return [self.from_config_root(*s.split(os.sep)) for s in syspaths]
+        return [self.rootpath(*s.split(os.sep)) for s in syspaths]
 
     def _get_extrabuildins(self, extrabuiltins=None):
         extras = extrabuiltins or {}
@@ -68,7 +67,7 @@ class Loader(object):
         return context
 
     def _execfile(self, relative_path, context):
-        execfile(self.from_config_root(relative_path), global_vars=context)
+        execfile(self.rootpath(relative_path), global_vars=context)
         return context
 
     def _after_execfile(self, context, module_names):
