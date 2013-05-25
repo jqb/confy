@@ -16,13 +16,13 @@ been never standardized. Here it is:
 1) keep your configuration in separate python modules inside your
    settings/conf/config/<however-you-call-it> *module* like this::
 
-   settings/
-     |-- __init__.py     => you want a *module* - believe me
-     |-- default.py      => or base.py or common.py or <whatever>.py - this should be common stuff
-     |-- development.py  => change/add all you need to run the app in development mode
-     |-- production.py   => change/add all you need to run the app in production mode
-     `-- local.py        => everything that depends on your machine you currently working on
-                            for your own (and everybody in a team) safety - remove it from version control
+       settings/
+         |-- __init__.py     => you want a *module* - believe me
+         |-- default.py      => or base.py or common.py or <whatever>.py - this should be common stuff
+         |-- development.py  => change/add all you need to run the app in development mode
+         |-- production.py   => change/add all you need to run the app in production mode
+         `-- local.py        => everything that depends on your machine you currently working on
+                                for your own (and everybody in a team) safety - remove it from version control
 
 
 2) load those files in the order you want to get the configuration. Use environment
