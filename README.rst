@@ -7,7 +7,7 @@ ver. 0.1 beta
 
 
 Idea
-====
+----
 
 Idea is simple and has been developed by (probably not only) django community, but has
 been never standardized. Here it is:
@@ -39,7 +39,7 @@ been never standardized. Here it is:
 
 
 Why
-===
+---
 
 1) I have really bad experience with *.ini and "configparser"-like parsers (eg from pylons/pyramid).
    There is something that people who invented it forget about::
@@ -74,7 +74,7 @@ Why
 
 
 Installation
-============
+------------
 
 Simple and easy::
 
@@ -82,7 +82,7 @@ Simple and easy::
 
 
 Roadmap
-=======
+-------
 
 - find and implement way to declare types of environment variables
 - add possibility to read *ini files (and declare types for them)
