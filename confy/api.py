@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
+import sys
+import imp
 
 from .utils import flatten, create_path_function, extrabuiltins, syspath, execfile, Importer
 from .collection import Collection, Raw
@@ -101,6 +103,23 @@ class Loader(object):
 
 
     # api
+    def merge(self, *mappings):
+        attrs = {}
+        for m in mappings:
+            if issubclass(m.__class__, dict):
+                attrs.update(m)
+            else:
+                attrs.update(m.__class__.__dict__)
+        return self.new(**attrs)
+
+    def module(self, name, mappings, add_to_sysmodules=True):
+        module = imp.new_module(name)
+        module.__file__ = self._file
+        module.__dict__.update(self.merge(*mappings))
+        if add_to_sysmodules:
+            sys.modules[name] = module
+        return module
+
     def from_modules(self, *files, **kwargs):
         splited = []
         for file in files:
@@ -114,6 +133,21 @@ class Loader(object):
         module_path, object_name = path.rsplit('.', 1)
         module = self.from_modules(module_path, **kwargs)
         return getattr(module, object_name)
+
+    def from_environ_vars(self, variables, silient=False):
+        data = {}
+        for vardef in variables:
+            if ":" in vardef:
+                env_name, setting_name = vardef.split(":")
+            else:
+                env_name = setting_name = vardef
+            try:
+                data[setting_name] = os.environ[env_name]
+            except KeyError:
+                if not silient:
+                    raise
+
+        return self.new(**data)
 
     @classmethod
     def env(cls, name, default=None, environ=None):
