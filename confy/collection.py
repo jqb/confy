@@ -10,7 +10,6 @@ from .utils import OrderedSet, Importer
 
 
 var_re = re.compile('\{[ ]*(\w+)[ ]*\}')
-identifier_re = re.compile('[_A-Za-z][_a-zA-Z0-9]*$')
 
 
 class InterpolationProperty(object):
