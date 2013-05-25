@@ -87,10 +87,10 @@ class Collection(six.with_metaclass(CollectionMeta)):
         return six.u("<Collection: %s>") % ", ".join(self._attributes)
 
     def __str__(self):
-        return unicode(self)
+        return self.__unicode__()
 
     def __repr__(self):
-        return unicode(self)
+        return self.__unicode__()
 
     def __setitem__(self, name, value):
         setattr(self, name, value)
