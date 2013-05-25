@@ -66,8 +66,12 @@ class Loader(object):
     def _before_execfiles(self, context):
         return context
 
-    def _execfile(self, relative_path, context):
-        execfile(self.rootpath(relative_path), global_vars=context)
+    def _execfile(self, relative_path, context, silient=False):
+        try:
+            execfile(self.rootpath(relative_path), global_vars=context)
+        except IOError:
+            if not silient:
+                raise
         return context
 
     def _after_execfile(self, context, module_names):
@@ -79,6 +83,7 @@ class Loader(object):
         syspaths = self._get_syspath(kwargs.get('syspath'))
         extras = self._get_extrabuildins(kwargs.get('extrabuiltins'))
         config_extention = self._get_config_extention(kwargs.get('config_extention'))
+        silient = kwargs.get('silient')
 
         with syspath(syspaths):
             with extrabuiltins(extras):
@@ -86,8 +91,9 @@ class Loader(object):
 
                 module_names = flatten(things, flat_only=[list, tuple])
                 for m in module_names:
-                    attributes = self._execfile('%s%s' % (m, config_extention), attributes)
-
+                    attributes = self._execfile(
+                        '%s%s' % (m, config_extention), attributes, silient=silient
+                    )
                 attributes = self._after_execfile(attributes, module_names)
 
         return attributes
