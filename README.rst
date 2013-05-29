@@ -34,7 +34,7 @@ been never standardized. Here it is:
         with confy.loader(__file__) as confy:
             confy.module(__name__, [
                 confy.from_modules('base', confy.env('CONFIGURATION_MODE', 'development')),
-                confy.from_modules('local', silient=True),
+                confy.from_modules('local', silent=True),
             ])
 
 
@@ -66,10 +66,10 @@ Why
         with confy.loader(__file__) as confy:
             confy.module(__name__, [
                 confy.from_modules('base', confy.env('CONFIGURATION_MODE', 'development')),
-                confy.from_modules('local', silient=True),
+                confy.from_modules('local', silent=True),
                 confy.from_environ_vars([
                     'MY_ENV_VARIABLES_GOES_HERE',
-                ], silient=True),
+                ], silent=True),
             ])
 
 

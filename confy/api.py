@@ -68,11 +68,11 @@ class Loader(object):
     def _before_execfiles(self, context):
         return context
 
-    def _execfile(self, relative_path, context, silient=False):
+    def _execfile(self, relative_path, context, silent=False):
         try:
             execfile(self.rootpath(relative_path), global_vars=context)
         except IOError:
-            if not silient:
+            if not silent:
                 raise
         return context
 
@@ -85,7 +85,7 @@ class Loader(object):
         syspaths = self._get_syspath(kwargs.get('syspath'))
         extras = self._get_extrabuildins(kwargs.get('extrabuiltins'))
         config_extention = self._get_config_extention(kwargs.get('config_extention'))
-        silient = kwargs.get('silient')
+        silent = kwargs.get('silent')
 
         with syspath(syspaths):
             with extrabuiltins(extras):
@@ -94,7 +94,7 @@ class Loader(object):
                 module_names = flatten(things, flat_only=[list, tuple])
                 for m in module_names:
                     attributes = self._execfile(
-                        '%s%s' % (m, config_extention), attributes, silient=silient
+                        '%s%s' % (m, config_extention), attributes, silent=silent
                     )
                 attributes = self._after_execfile(attributes, module_names)
 
@@ -134,7 +134,7 @@ class Loader(object):
         module = self.from_modules(module_path, **kwargs)
         return getattr(module, object_name)
 
-    def from_environ_vars(self, variables, silient=False):
+    def from_environ_vars(self, variables, silent=False):
         data = {}
         for vardef in variables:
             if ":" in vardef:
@@ -144,7 +144,7 @@ class Loader(object):
             try:
                 data[setting_name] = os.environ[env_name]
             except KeyError:
-                if not silient:
+                if not silent:
                     raise
 
         return self.new(**data)
