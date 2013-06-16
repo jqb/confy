@@ -38,6 +38,15 @@ been never standardized. Here it is:
             ])
 
 
+3) so in the end of the day you can simply import it easily and everythink is setup
+   for you
+
+        >>> import settings
+        >>> # DONE!
+        >>>
+        >>> settings.DB_USER  # etc...
+
+
 Why
 ---
 
@@ -53,8 +62,8 @@ Why
 
 
 2) You don't have this problem when you keep your config/settings inside simple python files,
-   however there is no standardized one-and-only-one-god-way how to keep and load those kind of
-   files.
+   however there is no standardized one-and-only-one-good-way how to keep and load those kind of
+   files
 
 
 3) Recently I've found interesting presentation (https://speakerdeck.com/brutasse/stop-writing-settings-files)
@@ -70,16 +79,17 @@ With "confy" you can simply load the configuration from any source you want, tha
 flexibility on how and  where you want to keep configuration (* ini is not supported **yet**)
 
 
-        import confy
+    import confy
 
-        with confy.loader(__file__) as confy:
-            confy.module(__name__, [
-                confy.from_modules('base', confy.env('CONFIGURATION_MODE', 'development')),
-                confy.from_modules('local', silent=True),
-                confy.from_environ_vars([
-                    'MY_ENV_VARIABLES_GOES_HERE',
-                ], silent=True),
-            ])
+    with confy.loader(__file__) as confy:
+        confy.module(__name__, [
+            confy.from_modules('base', confy.env('CONFIGURATION_MODE', 'development')),
+            confy.from_modules('local', silent=True),
+            confy.from_environ_vars([
+                'MY_ENV_VARIABLES_GOES_HERE',
+            ], silent=True),
+        ])
+
 
 
 Installation
