@@ -3,7 +3,7 @@ from collections import MutableMapping, Mapping
 
 from .properties import (
     LazyProperty, RawProperty, InterpolationProperty,
-    ImporterProperty, ValueProperty
+    ImporterProperty, ValueProperty, BaseProperty,
 )
 
 
@@ -83,9 +83,7 @@ class Collection(object):
             prop = self.__data.pop(key, **kwargs)
         except KeyError:
             raise KeyError("Collection has no such key: %s" % key)
-        if isinstance(prop, BaseProperty):
-            return prop.get(self)
-        return prop
+        return prop.get(self)
 
     def popitem(self):
         try:
