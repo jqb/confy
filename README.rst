@@ -41,10 +41,15 @@ been never standardized. Here it is:
 Why
 ---
 
-1) I have really bad experience with *.ini and "configparser"-like parsers (eg from pylons/pyramid).
-   There is something that people who invented it forget about::
+1) I believe in clean and elegant solutions.
+
+
+2) I have really bad experience with *.ini and "configparser"-like parsers (eg from pylons/pyramid).
+   There are few issues with them::
 
      **Each setting has a type. And you have to write code that changes text into other types.**
+
+     **__getitem__ syntax is verbose, actually it's too verbose in some cases**
 
 
 2) You don't have this problem when you keep your config/settings inside simple python files,
@@ -53,13 +58,17 @@ Why
 
 
 3) Recently I've found interesting presentation (https://speakerdeck.com/brutasse/stop-writing-settings-files)
-   about configuration injected from environment variables. And I love the idea (till slide no 12),
-   but it has the same issues as *ini files, so::
-
-     **Please do not stop writing setings files**
+   about configuration injected from environment variables. And I love the idea (untill slide No 12),
+   but it has the same issues as *ini files
 
 
-   Use confy instead if really want (or have to) to use this approach::
+
+Configuration sources
+---------------------
+
+With "confy" you can simply load the configuration from any source you want, that gives you
+flexibility on how and  where you want to keep configuration (* ini is not supported **yet**)
+
 
         import confy
 
@@ -84,7 +93,6 @@ Simple and easy::
 Roadmap
 -------
 
-- find and implement way to declare types of environment variables
 - add possibility to read *ini files (and declare types for them)
 
 
