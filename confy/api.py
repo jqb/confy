@@ -4,7 +4,7 @@ import sys
 import imp
 
 from .utils import flatten, create_path_function, extrabuiltins, syspath, execfile, Importer
-from .collection import Collection, Raw
+from .collection import Collection, RawProperty, LazyProperty
 
 
 class Loader(object):
@@ -13,7 +13,8 @@ class Loader(object):
 
     Collection = Collection
     lazyimport = Importer
-    raw = Raw
+    lazy = LazyProperty
+    raw = RawProperty
 
 
     def __init__(self, file=None, syspaths=None, config_extention=None):
@@ -104,13 +105,10 @@ class Loader(object):
 
     # api
     def merge(self, *mappings):
-        attrs = {}
+        attrs = self.collection()
         for m in mappings:
-            if issubclass(m.__class__, dict):
-                attrs.update(m)
-            else:
-                attrs.update(m.__class__.__dict__)
-        return self.new(**attrs)
+            attrs.update(m)
+        return attrs
 
     def module(self, name, mappings, add_to_sysmodules=True):
         module = imp.new_module(name)
@@ -154,7 +152,7 @@ class Loader(object):
         environ = environ or os.environ
         return environ.get(name, default)
 
-    new = collection = Collection.extend
+    new = collection = Collection().extend
     # end
 
 

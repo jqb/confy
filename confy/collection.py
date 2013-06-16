@@ -1,140 +1,186 @@
 # -*- coding: utf-8 -*-
-import re
-import inspect
-from itertools import chain
-from collections import Mapping
+from collections import MutableMapping, Mapping
 
-import six
-
-from .utils import OrderedSet, Importer
+from .properties import (
+    LazyProperty, RawProperty, InterpolationProperty,
+    ImporterProperty, ValueProperty
+)
 
 
-var_re = re.compile('\{[ ]*(\w+)[ ]*\}')
+class Collection(object):
+
+    # For extendibility purposes we might want to change / add some properties
+    property_classes = [
+        LazyProperty,
+        RawProperty,
+        InterpolationProperty,
+        ImporterProperty,
+        ValueProperty,
+    ]
+
+    def _choose_property(self, name, value):
+        for property_cls in self.property_classes:
+            prop, success = property_cls.build(name, value)
+            if success:
+                return prop
+        raise ValueError("No property for: %s | %s" % (name, value))
+    # end
 
 
-class InterpolationProperty(object):
-    def __init__(self, name, template, var_names):
-        self.name = name
-        self.template = template
-        self.var_names = var_names
-
-    def call_callables(self, attr):
-        func = getattr(attr, '__call__', lambda: attr)
-        return func()
-
-    def __get__(self, instance, type=None):
-        values = dict([
-            (vname, self.call_callables(instance[vname]))
-            for vname in self.var_names
-        ])
-        return self.template.format(**values)
+    def __init__(self, *args, **kwargs):
+        dict_data_key = "_%s__data" % self.__class__.__name__
+        self.__dict__.update({
+            dict_data_key: {},
+        })
+        self.update(*args, **kwargs)
 
 
-class ImporterProperty(object):
-    def __init__(self, importer):
-        self.importer = importer
+    # Protected general read / write methods
+    def __set(self, name, value):
+        self.__data[name] = self._choose_property(name, value)
 
-    def __get__(self, instance, type=None):
-        return self.importer.import_it()
-
-
-class Raw(six.text_type):
-    pass
-
-
-class CollectionMeta(type):
-    @classmethod
-    def __choose_property(cls, name, value):
-        if issubclass(value.__class__, Importer):
-            return ImporterProperty(value)
-
-        if issubclass(value.__class__, six.string_types) and not issubclass(value.__class__, Raw):
-            var_names = var_re.findall(value)
-            if var_names:
-                return InterpolationProperty(name, value, var_names)
-
-        return value
-
-    def __new__(cls, cls_name, bases, attrs):
-        super_new = super(CollectionMeta, cls).__new__
-
-        visible_attributes = OrderedSet(chain.from_iterable(
-            elem for elem in (getattr(base, '_attributes', []) for base in bases)
-        ))
-
-        for name, value in attrs.items():
-            if not inspect.isfunction(value) and not name.startswith("_"):
-                visible_attributes.add(name)
-            attrs[name] = cls.__choose_property(name, value)
-
-        attrs.update(
-            _attributes=list(visible_attributes),
-        )
-        return super_new(cls, cls_name, bases, attrs)
-
-
-class Collection(six.with_metaclass(CollectionMeta)):
-    def __getitem__(self, name):
+    def __property(self, name):
         try:
-            return getattr(self, name)
-        except AttributeError:
-            raise KeyError(name)
+            return self.__data[name]
+        except KeyError:
+            raise KeyError("Collection has no such key: %s" % name)
 
-    def __iter__(self):
-        return iter(self._attributes)
+    def __get(self, name):
+        prop = self.__property(name)
+        return prop.get(self)
 
-    def __unicode__(self):
-        return six.u("<Collection: %s>") % ", ".join(self._attributes)
+    def __raw(self, name):
+        prop = self.__property(name)
+        return prop.raw_value
+    # end
 
-    def __str__(self):
-        return self.__unicode__()
 
-    def __repr__(self):
-        return self.__unicode__()
-
+    # [] set, get & del protocol
     def __setitem__(self, name, value):
-        setattr(self, name, value)
+        self.__set(name, value)
 
-    def _merge(self, mapping):
-        for key in mapping.keys():
-            self[key] = mapping[key]
+    def __getitem__(self, name):
+        return self.__get(name)
 
-    def _from_sequence(self, seq):
-        for double in seq:
-            if len(double) != 2:
-                raise ValueError("{0!r} doesn't have a length of 2".format(
-                        double))
-            self[double[0]] = double[1]
+    def __delitem__(self, name):
+        del self.__data[name]
+    # end
 
-    def _update(self, arg, kwargs):
-        if arg:
-            if isinstance(arg, Mapping):
-                self._merge(arg)
-            else:
-                self._from_sequence(arg)
-        if kwargs:
-            self._merge(kwargs)
 
-    def update(self, arg=None, **kwargs):
-        self._update(arg, kwargs)
+    # support for get attribute protocol
+    def __getattr__(self, name):
+        if name in self.__dict__:
+            return self.__dict__[name]
+        return self.__get(name)
 
-    def items(self):
-        return zip(self._attributes, self)
+    def __setattr__(self, name, value):
+        self.__set(name, value)
+    # end
+
+
+    def pop(self, key, **kwargs):
+        try:
+            prop = self.__data.pop(key, **kwargs)
+        except KeyError:
+            raise KeyError("Collection has no such key: %s" % key)
+        if isinstance(prop, BaseProperty):
+            return prop.get(self)
+        return prop
+
+    def popitem(self):
+        try:
+            key = next(iter(self.__data))
+        except StopIteration:
+            raise KeyError
+        value = self.__get(key)
+        del self.__data[key]
+        return key, value
+
+    def update(*args, **kwds):
+        args_len = len(args)
+
+        if args_len > 2:
+            raise TypeError(
+                "update() takes at most 2 positional arguments ({} given)".format(args_len)
+            )
+        elif not args:
+            raise TypeError("update() takes at least 1 argument (0 given)")
+
+        self = args[0]
+        other = args[1] if args_len >= 2 else ()
+
+        if isinstance(other, Mapping):
+            for key in other:
+                self.__set(key, other[key])
+        elif hasattr(other, "keys"):
+            for key in other.keys():
+                self.__set(key, other[key])
+        else:
+            for key, value in other:
+                self.__set(key, value)
+        for key, value in kwds.items():
+            self.__set(key, value)
+
+    def setdefault(self, key, default=None):
+        try:
+            return self.__get(key)
+        except KeyError:
+            self.__set(key, default)
+        return default
+
+    def clear(self):
+        self.__data.clear()
 
     def keys(self):
-        return self._attributes
+        return self.__data.keys()
+
+    def items(self):
+        return [(name, self.__get(name)) for name in self.__data]
+
+    def values(self):
+        return [self.__get(key) for key in self]
+
+    def iterkeys(self):
+        return iter(self.__data.keys())
+
+    def itervalues(self):
+        for key in self:
+            yield self.__get(key)
+
+    def iteritems(self):
+        for key in self:
+            yield (key, self.__get(key))
+
+    def __iter__(self):
+        return iter(self.__data)
+
+    def __contains__(self, key):
+        return key in self.__data
 
     def get(self, key, default=None):
         try:
-            return self[key]
+            return self.__get(key)
         except KeyError:
             return default
 
-    @classmethod
-    def extend(cls, **kwargs):
-        newtype = type("Collection", (cls,), kwargs)
-        return newtype()
+    def __eq__(self, other):
+        if not isinstance(other, Mapping):
+            return NotImplemented
+        return dict(self.items()) == dict(other.items())
+
+    def __ne__(self, other):
+        return not (self == other)
+
+    # Extra *Collection* methods
+    def raw_items(self):
+        return [(name, self.__data[name]) for name in self.keys()]
+
+    def extend(self, *args, **kwargs):
+        attrs = Collection(self.raw_items())
+        attrs.update(*args, **kwargs)
+        return attrs
+    # end
 
 
-Mapping.register(Collection)
+MutableMapping.register(Collection)
 collection = Collection()
