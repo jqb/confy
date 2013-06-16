@@ -13,12 +13,6 @@ class CollectionTest(unittest.TestCase):
         )
         return FANCY_API_URL
 
-    def test_class_definition_creates_object(self):
-        API = self.get_example_conf()
-
-        self.assertTrue(issubclass(API.__class__, confy.Collection))
-        self.assertNotEqual(type, API.__class__)
-
     def test_variable_interpolation_should_work_as_a_charm(self):
         API = self.get_example_conf()
         API.root = 'http://api.veryfancy.com'
