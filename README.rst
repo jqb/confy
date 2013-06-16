@@ -76,7 +76,7 @@ Configuration sources
 ---------------------
 
 With "confy" you can simply load the configuration from any source you want, that gives you
-flexibility on how and  where you want to keep configuration (* ini is not supported **yet**)
+flexibility on how and  where you want to keep configuration (* ini is not supported **yet**)::
 
 
     import confy
