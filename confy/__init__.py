@@ -3,7 +3,10 @@ VERSION = '0.1beta'
 
 
 from .api import Loader
-
+from .properties import (
+    BaseProperty, ValueProperty, InterpolationProperty, ImporterProperty,
+    RawProperty, LazyProperty,
+)
 
 loader = Loader
 collection = Loader.collection
