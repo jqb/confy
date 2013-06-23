@@ -23,9 +23,8 @@ class TConfMergeTests(unittest.TestCase):
 
         tconf = six.moves.reload_module(tconf)
 
-        self.assertEqual(tconf.ADD, 'http://development.api.com/add/')
-        self.assertEqual(tconf.REMOVE, 'http://development.api.com/remove/')
-        self.assertEqual(tconf.DELETE, 'http://development.api.com/delete/')
+        self.assertEqual(tconf.API_ADD, 'http://development.api.com/add/')
+        self.assertEqual(tconf.API_DELETE, 'http://development.api.com/delete/')
 
         self.cleanup_dict(os.environ, 'CONFIGURATION_MODE')
 
@@ -35,9 +34,8 @@ class TConfMergeTests(unittest.TestCase):
 
         tconf = six.moves.reload_module(tconf)
 
-        self.assertEqual(tconf.ADD, 'http://production.api.com/add/')
-        self.assertEqual(tconf.REMOVE, 'http://production.api.com/remove/')
-        self.assertEqual(tconf.DELETE, 'http://production.api.com/delete/')
+        self.assertEqual(tconf.API_ADD, 'http://production.api.com/add/')
+        self.assertEqual(tconf.API_DELETE, 'http://production.api.com/delete/')
 
         self.cleanup_dict(os.environ, 'CONFIGURATION_MODE')
 
