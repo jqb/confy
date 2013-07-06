@@ -1,5 +1,6 @@
 [pep8]
 
+exclude = */docs/*
 max-line-length = 100
 
 # E251 no spaces around keyword / parameter equals
