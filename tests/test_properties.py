@@ -56,7 +56,7 @@ class InterpolationProperty(unittest.TestCase):
             "name": "John",
             "last_name": "Smith",
             "age": 31,
-            "full_name": (lambda : "John Smith"),
+            "full_name": (lambda: "John Smith"),
         }
         self.name_property = self.property_class("name", "{name}", ["name"])
         self.last_name_property = self.property_class("last_name", "{last_name}", ["last_name"])
