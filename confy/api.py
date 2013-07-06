@@ -11,11 +11,10 @@ class Loader(object):
     conf_config_extention = 'py'
     conf_global_confy_object_name = 'confy'
 
-    Collection = Collection
+    collection = Collection
     lazyimport = Importer
     lazy = LazyProperty
     raw = RawProperty
-
 
     def __init__(self, file=None, syspaths=None, config_extention=None):
         self._file = file
@@ -145,14 +144,12 @@ class Loader(object):
                 if not silent:
                     raise
 
-        return self.new(**data)
+        return self.collection(**data)
 
     @classmethod
     def env(cls, name, default=None, environ=None):
         environ = environ or os.environ
         return environ.get(name, default)
-
-    new = collection = Collection().extend
     # end
 
 
