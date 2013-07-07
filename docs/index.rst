@@ -77,7 +77,7 @@ been never standardized, so you might have seen it before in many differnt forms
 
 
 
-This is just basic and really simple example. Clean loading is not the thing confy does for you.
+This is just basic and really simple example. Clean loading is not the only thing "confy" does for you.
 
 
 Installation
