@@ -89,8 +89,8 @@ Contents of your "base.py" might look like this
 
    API = confy.collection(
        domain = "http://api.com",
-       ADD    = '{api_domain}/add/'
-       DELETE = '{api_domain}/delete/'
+       ADD    = '{domain}/add/'
+       DELETE = '{domain}/delete/'
    )
 
 
