@@ -112,7 +112,8 @@ Then again, changing domain url is very simple, inside your "development.py"
    >>> assert config.API.DELETE == 'http://api-development.com/delete/'
 
 
-As you can see it's preatty simple, but two things might have been interested to you.
+As you can see it's preatty simple, but two things might be interesting to you.
+
 
 1) global "confy" object?
 
