@@ -42,7 +42,7 @@ Assuming this is content of your "settings/base.py" file:
    :lines: 1-8
 
 
-you can easily change values of "api_domain" and "s3_assets_domain" in development.py/production.py
+you can easily change values of "api_domain" in development.py/production.py
 and you don't need to rewrite all the urls once again.
 
 
