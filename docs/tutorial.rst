@@ -99,7 +99,7 @@ Then again, changing domain url is very simple, inside your "development.py"
 .. code-block:: python
 
    API.update(
-       domain = "http://api.com",
+       domain = "http://api-development.com",
    )
 
 
