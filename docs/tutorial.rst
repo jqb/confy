@@ -27,7 +27,7 @@ Variables interpolation
 -----------------------
 
 Interpolation is an nice feature in order to make your configuration clean and as simple as possible.
-Confy uses standard python "{variable_name}" interpolation, so you don't need to learn anythink new.
+Confy uses standard python "{variable_name}" interpolation, so you don't need to learn anything new.
 Let's see simple example.
 
 
