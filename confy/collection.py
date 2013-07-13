@@ -181,4 +181,3 @@ class Collection(object):
 
 
 MutableMapping.register(Collection)
-collection = Collection()
