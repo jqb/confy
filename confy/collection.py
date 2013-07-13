@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from types import ModuleType
 from collections import MutableMapping, Mapping
 
 from .properties import (
@@ -181,3 +182,21 @@ class Collection(object):
 
 
 MutableMapping.register(Collection)
+
+
+class Module(ModuleType):
+    def __init__(self, module_name, filepath, collection):
+        super(Module, self).__init__(module_name)
+        self.__file__ = filepath
+        self.__collection = collection
+
+    def __getattr__(self, name):
+        collection = self.__collection
+        if name in collection:
+            value = collection[name]
+            setattr(self, name, value)
+            return value
+        return object.__getattribute__(self, name)
+
+    def __getitem__(self, name):
+        return self.__collection[name]
