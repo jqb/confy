@@ -11,7 +11,7 @@ setup(
     description='',
     author='Jakub Janoszek',
     author_email='kuba.janoszek@gmail.com',
-    url='https://github.com/jqb/confy/tree/ver-%s' % confy.VERSION,
+    url='https://pypi.python.org/pypi/confy',
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
