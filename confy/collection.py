@@ -2,6 +2,8 @@
 from types import ModuleType
 from collections import MutableMapping, Mapping
 
+import six
+
 from .properties import (
     LazyProperty, RawProperty, InterpolationProperty,
     ImporterProperty, ValueProperty,
@@ -179,6 +181,13 @@ class Collection(object):
         attrs.update(*args, **kwargs)
         return attrs
     # end
+
+    def __str__(self):
+        return six.u('<Collection: %s>' % [
+            key for key in self.keys() if not key.startswith('_')
+        ])
+
+    __unicode__ = __repr__ = __str__
 
 
 MutableMapping.register(Collection)
