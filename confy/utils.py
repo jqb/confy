@@ -12,33 +12,41 @@ def create_path_function(thefile):
     return lambda *a: abspath(join(root, *a))
 
 
-@contextmanager
-def extrabuiltins(things):
-    builtins = six.moves.builtins
-    try:
-        for name, thing in things.items():
-            setattr(builtins, name, thing)
-        yield
-    finally:
-        for name in things:
-            delattr(builtins, name)
+class extrabuiltins(object):
+    def __init__(self, things):
+        self.things = things
+        self.builtins = six.moves.builtins
+
+    def extend(self):
+        for name, thing in self.things.items():
+            setattr(self.builtins, name, thing)
+
+    def cleanup(self):
+        for name in self.things:
+            delattr(self.builtins, name)
+
+    def __enter__(self):
+        self.extend()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.cleanup()
 
 
 class syspath(object):
-    def __init__(self, paths):
+    def __init__(self, paths, sys_path=None):
         self.paths = paths
+        self.sys_path = sys_path or sys.path
 
     def extend(self):
-        import sys
         if self.paths:
             for path in reversed(self.paths):
-                sys.path.insert(0, path)
+                self.sys_path.insert(0, path)
 
     def cleanup(self):
-        import sys
         if self.paths:
             for path in reversed(self.paths):
-                sys.path.remove(path)
+                self.sys_path.remove(path)
 
     def __enter__(self):
         self.extend()
