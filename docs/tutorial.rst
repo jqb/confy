@@ -19,7 +19,9 @@ Content of settings/__init__.py is also the same:
         import confy
 
         with confy.loader(__file__) as confy:
-            config = confy.from_modules('base', confy.env('CONFIGURATION_MODE', 'development'))
+            config = confy.merge(
+                confy.from_modules('base', confy.env('CONFIGURATION_MODE', 'development')),
+            )
 
 
 
@@ -76,8 +78,8 @@ Contents of "settings/production.py":
 
 
 
-Neasted structures
-------------------
+Neasted structures - collections
+--------------------------------
 
 In general keeping settings as flat'n'simple variables is the best idea, however it makes sense
 sometimes to avoid typing the same prefix again and again.
@@ -87,10 +89,11 @@ Contents of your "base.py" might look like this
 
 .. code-block:: python
 
+   # settings/base.py
    API = confy.collection(
        domain = "http://api.com",
-       ADD    = '{domain}/add/'
-       DELETE = '{domain}/delete/'
+       ADD    = '{domain}/add/',
+       DELETE = '{domain}/delete/',
    )
 
 
@@ -98,6 +101,7 @@ Then again, changing domain url is very simple, inside your "development.py"
 
 .. code-block:: python
 
+   # settings/development.py
    API.update(
        domain = "http://api-development.com",
    )
@@ -118,12 +122,70 @@ As you can see it's preatty simple, but two things might be interesting to you.
 1) global "confy" object?
 
    yes - it is global helper **buy ONLY inside your settings folder** and it is global
-   only for the time when module is beeing loaded
+   only for the time when module is beeing loaded. Thats why It's been decided to use
+   "with confy.loader" statement instead of simple assigment.
 
 
 2) "confy.collection"
 
    creates confy collection object. Basicaly all you need to know is that it
    behaves exactly as a dictionary, and has additional features like to recognize
-   "{interpolation_variables}"
+   "{interpolation_variables}" and ability to use __getitem__ notation for keys if
+   you want to (keys might be non-identifiers as well - but ofcourse you won't be able
+   to get them with "." notation).
 
+   .. code-block:: python
+
+      >>> from settings import config
+      >>> config.API.ADD == config.API['ADD']  # => True
+
+
+Lazy property
+-------------
+
+Having interpolation property is nice feature but it very rarely happens that you need
+more flexibility. "lazy" property is allowing you to create property-like function that'll
+be invoked to calculate value.
+
+.. code-block:: python
+
+   API = confy.collection(
+       domain = "http://api.com",
+       ADD    = '{domain}/add/',
+       DELETE = '{domain}/delete/',
+       ALL   = confy.lazy(lambda self: "%s, %s" % (self.ADD, self.DELETE)),
+   )
+
+   all_urls = API.ALL  # the function that was passed to "confy.lazy" is invoked here
+   assert all_urls == "http://api.com/add/, http://api.com/delete/"
+
+
+Lazy import property
+--------------------
+
+It's often practice to store complete path to "somekind.of.BackendClass" in settings file.
+Hovever you always need to write code that will later use it to acctualy import the think.
+You can stop thinking about it:
+
+.. code-block:: python
+
+   # settings/base.py
+   SUPER_DUPER_BACKEND = confy.lazyimport('somekind.of.BackendClass')
+
+
+.. code-block:: python
+
+   >>> from settings import config  # no import here...
+   >>> config.SUPER_DUPER_BACKEND   # ...but here the import is done and BackendClass is ready for you
+
+
+Raw propery
+-----------
+
+Ok - but you really want to use "{}" chars inside your setting string - exactly as they are. - No problem:
+
+
+.. code-block:: python
+
+   # settings/base.py
+   RAW_STRING = confy.raw('use as many {} specia; {{{ }}}}} () characters as you want')

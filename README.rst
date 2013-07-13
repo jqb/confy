@@ -3,7 +3,7 @@ confy
 
 Pragmatic & flexible configuration loader that makes your app settings clean and sexy.
 
-ver. 0.1 beta
+ver. 0.3 beta
 
 
 Idea
@@ -47,6 +47,9 @@ been never standardized. Here it is:
         >>> settings.DB_USER  # etc...
 
 
+This is the basic stuff but "confy" has a lot more to offer.
+
+
 Why
 ---
 
@@ -56,14 +59,13 @@ Why
 2) I have really bad experience with *.ini and "configparser"-like parsers (eg from pylons/pyramid).
    There are few issues with them::
 
-     **Each setting has a type. And you have to write code that changes text into other types.**
+     => Each setting has a type. And you have to write code that changes text into other types.
 
-     **__getitem__ syntax is verbose, actually it's too verbose in some cases**
+     => __getitem__ syntax is verbose, actually it's too verbose in some cases
 
-
-2) You don't have this problem when you keep your config/settings inside simple python files,
+   You don't have this problem when you keep your config/settings inside simple python files,
    however there is no standardized one-and-only-one-good-way how to keep and load those kind of
-   files
+   files.
 
 
 3) Recently I've found interesting presentation (https://speakerdeck.com/brutasse/stop-writing-settings-files)
@@ -76,7 +78,7 @@ Configuration sources
 ---------------------
 
 With "confy" you can simply load the configuration from any source you want, that gives you
-flexibility on how and  where you want to keep configuration (* ini is not supported **yet**)::
+flexibility on how and where you want to keep configuration::
 
 
     import confy
@@ -88,7 +90,11 @@ flexibility on how and  where you want to keep configuration (* ini is not suppo
             confy.from_environ_vars([
                 'MY_ENV_VARIABLES_GOES_HERE',
             ], silent=True),
+            confy.from_ini('~/.project_rc', silent=True),
         ])
+
+
+Configuration are loaded one after another, so please keep in mind that variables might be overriden.
 
 
 
@@ -100,19 +106,18 @@ Simple and easy::
    $ pip install confy
 
 
+Docs
+----
+
+You can find documentation here: https://confy.readthedocs.org/en/latest/
+
+
 Supported platforms
 -------------------
 
 * Python2.6
 * Python2.7
 * Python3.3
-
-
-
-Roadmap
--------
-
-- add possibility to read *ini files (and declare types for them)
 
 
 Authors

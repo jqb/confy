@@ -37,12 +37,13 @@ been never standardized, so you might have seen it before in many differnt forms
    In order to do that put the following snippet inside settings/__init__.py file
 
    .. code-block:: python
-      :linenos:
 
-        import confy
+      import confy
 
-        with confy.loader(__file__) as confy:
-            config = confy.from_modules('base', confy.env('CONFIGURATION_MODE', 'development'))
+      with confy.loader(__file__) as confy:
+          config = confy.merge(
+              confy.from_modules('base', confy.env('CONFIGURATION_MODE', 'development')),
+          )
 
 
 3) so in the end of the day you can simply import it easily and be sure that exactly configuration
@@ -77,7 +78,7 @@ been never standardized, so you might have seen it before in many differnt forms
 
 
 
-This is just basic and really simple example. Clean loading is not the only thing "confy" does for you.
+This is just basic and really simple example. But clean loading is not the only thing "confy" does for you.
 
 
 Installation
