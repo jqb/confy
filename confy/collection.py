@@ -3,7 +3,7 @@ from collections import MutableMapping, Mapping
 
 from .properties import (
     LazyProperty, RawProperty, InterpolationProperty,
-    ImporterProperty, ValueProperty, BaseProperty,
+    ImporterProperty, ValueProperty,
 )
 
 
