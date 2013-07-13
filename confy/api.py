@@ -1,25 +1,21 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
-import imp
 
-from .utils import flatten, create_path_function, extrabuiltins, syspath, execfile, Importer
-from .collection import Collection, RawProperty, LazyProperty
+from .utils import create_path_function, extrabuiltins, syspath, Importer, split_filenames
+from .collection import Collection, RawProperty, LazyProperty, Module
+from .sources import ModuleSource, EnvironmentVariableSource, INISource
 
 
 class Loader(object):
-    conf_config_extention = 'py'
-    conf_global_confy_object_name = 'confy'
-
     collection = Collection
     lazyimport = Importer
     lazy = LazyProperty
     raw = RawProperty
 
-    def __init__(self, file=None, syspaths=None, config_extention=None):
+    def __init__(self, file=None, syspaths=None):
         self._file = file
         self._syspaths = syspaths or ['.']
-        self.conf_config_extention = config_extention or self.__class__.conf_config_extention
 
         if self._file:
             self.rootpath = create_path_function(self._file)
@@ -27,7 +23,6 @@ class Loader(object):
             self.rootpath = None
 
         self._factories = {}
-
 
     # experimental api
     def factory(self, function):
@@ -43,8 +38,45 @@ class Loader(object):
         return object.__getattribute__(self, name)
     # end
 
+    # api
+    def merge(self, *sources):
+        context = {}
+        for s in sources:
+            context = s.load(context)
+        return self.collection(**context)
 
-    # execfile processing configuration
+    def module(self, name, sources, add_to_sysmodules=True):
+        module = Module(name, self._file, self.merge(*sources))
+        if add_to_sysmodules:
+            sys.modules[name] = module
+        return module
+
+    def from_modules(self, *files, **kwargs):
+        return ModuleSource(
+            names=split_filenames(files, abspath=self.rootpath, ext=kwargs.get('ext', 'py')),
+            silent=kwargs.get('silent'),
+        )
+
+    def from_environ_vars(self, names, silent=False):
+        return EnvironmentVariableSource(
+            names=names,
+            silent=silent,
+            environ=os.environ,
+        )
+
+    def from_ini(self, *files, **kwargs):
+        return INISource(
+            names=split_filenames(files, abspath=self.rootpath, ext=kwargs.get('ext', 'ini')),
+            silent=kwargs.get('silent')
+        )
+
+    @classmethod
+    def env(cls, name, default=None, environ=None):
+        environ = environ or os.environ
+        return environ.get(name, default)
+    # end
+
+    # processing configuration
     def _get_syspath(self, paths=None):
         syspaths = paths or []
         syspaths.extend(self._syspaths)
@@ -54,109 +86,22 @@ class Loader(object):
 
     def _get_extrabuildins(self, extrabuiltins=None):
         extras = extrabuiltins or {}
-        if self.conf_global_confy_object_name not in extras:
-            extras[self.conf_global_confy_object_name] = self
+        if 'confy' not in extras:
+            extras['confy'] = self
         return extras
-
-    def _get_config_extention(self, config_extention=None):
-        extention = config_extention or self.conf_config_extention
-        return ".%s" % extention if extention else ""
     # end
-
-
-    # processing
-    def _before_execfiles(self, context):
-        return context
-
-    def _execfile(self, relative_path, context, silent=False):
-        try:
-            execfile(self.rootpath(relative_path), global_vars=context)
-        except IOError:
-            if not silent:
-                raise
-        return context
-
-    def _after_execfile(self, context, module_names):
-        if 'MODE' not in context:
-            context.update(MODE=module_names[-1])
-        return context
-
-    def _merge_modules(self, *things, **kwargs):
-        syspaths = self._get_syspath(kwargs.get('syspath'))
-        extras = self._get_extrabuildins(kwargs.get('extrabuiltins'))
-        config_extention = self._get_config_extention(kwargs.get('config_extention'))
-        silent = kwargs.get('silent')
-
-        with syspath(syspaths):
-            with extrabuiltins(extras):
-                attributes = self._before_execfiles({})
-
-                module_names = flatten(things, flat_only=[list, tuple])
-                for m in module_names:
-                    attributes = self._execfile(
-                        '%s%s' % (m, config_extention), attributes, silent=silent
-                    )
-                attributes = self._after_execfile(attributes, module_names)
-
-        return attributes
-    # end
-
-
-    # api
-    def merge(self, *mappings):
-        attrs = self.collection()
-        for m in mappings:
-            attrs.update(m)
-        return attrs
-
-    def module(self, name, mappings, add_to_sysmodules=True):
-        module = imp.new_module(name)
-        module.__file__ = self._file
-        module.__dict__.update(self.merge(*mappings))
-        if add_to_sysmodules:
-            sys.modules[name] = module
-        return module
-
-    def from_modules(self, *files, **kwargs):
-        splited = []
-        for file in files:
-            splited.extend(
-                map(lambda s: s.strip(), file.split(','))
-            )
-        merged = self._merge_modules(*splited, **kwargs)
-        return self.collection(**merged)
-
-    def from_object(self, path, **kwargs):
-        module_path, object_name = path.rsplit('.', 1)
-        module = self.from_modules(module_path, **kwargs)
-        return getattr(module, object_name)
-
-    def from_environ_vars(self, variables, silent=False):
-        data = {}
-        for vardef in variables:
-            if ":" in vardef:
-                env_name, setting_name = vardef.split(":")
-            else:
-                env_name = setting_name = vardef
-            try:
-                data[setting_name] = os.environ[env_name]
-            except KeyError:
-                if not silent:
-                    raise
-
-        return self.collection(**data)
-
-    @classmethod
-    def env(cls, name, default=None, environ=None):
-        environ = environ or os.environ
-        return environ.get(name, default)
-    # end
-
 
     # context manager support
     def __enter__(self):
+        self._ctx_syspath = syspath(self._get_syspath())
+        self._ctx_extrabuildins = extrabuiltins(self._get_extrabuildins())
+        self._ctx_syspath.extend()
+        self._ctx_extrabuildins.extend()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        pass
+        self._ctx_syspath.cleanup()
+        self._ctx_extrabuildins.cleanup()
+        del self._ctx_syspath
+        del self._ctx_extrabuildins
     # end
