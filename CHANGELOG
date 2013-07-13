@@ -1,0 +1,4 @@
+ver 0.3 beta:
+- api incompatibile change: from_<source> function are not longer return "confy.collection"
+- support for ini files added
+- docs updates
