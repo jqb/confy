@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
+import sys
 import importlib
-import collections
 from os.path import join, dirname, abspath
-from contextlib import contextmanager
 
 import six
 
