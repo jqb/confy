@@ -13,8 +13,4 @@ CONTENTURL = '{s3_assets_domain}/project-assets/content/'
 SITECONTENTURL = '{s3_assets_domain}/project-assets/sitecontent/'
 
 
-# Backend classes to load on demand - to keep it really lazy you need
-# to put it into collection container
-FAKE_BACKEND = confy.collection(
-    CLASS = confy.lazyimport('tests.fake.backend.FakeBackend'),
-)
+FAKE_BACKEND_CLASS = confy.lazyimport('tests.fake.backend.FakeBackend')

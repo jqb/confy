@@ -29,7 +29,7 @@ class TConfMergeTests(unittest.TestCase):
 
         eq(tconf.API_ADD, 'http://development.api.com/add/')
         eq(tconf.API_DELETE, 'http://development.api.com/delete/')
-        eq(tconf.FAKE_BACKEND.CLASS, FakeBackend)
+        eq(tconf.FAKE_BACKEND_CLASS, FakeBackend)
 
         self.cleanup_dict(os.environ, 'CONFIGURATION_MODE')
 
@@ -41,7 +41,7 @@ class TConfMergeTests(unittest.TestCase):
 
         eq(tconf.API_ADD, 'http://production.api.com/add/')
         eq(tconf.API_DELETE, 'http://production.api.com/delete/')
-        eq(tconf.FAKE_BACKEND.CLASS, FakeBackend)
+        eq(tconf.FAKE_BACKEND_CLASS, FakeBackend)
 
         self.cleanup_dict(os.environ, 'CONFIGURATION_MODE')
 
