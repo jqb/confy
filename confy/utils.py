@@ -85,3 +85,42 @@ class Importer(object):
             except AttributeError as e:
                 raise AttributeError("Module '%s': => %s" % (path_to_item, e.message))
         return self.__importeditem
+
+
+def smart_ext(name, ext=None):
+    """
+    Smartly add extention to the file name
+
+    Usage::
+
+        >>> smart_ext("config")
+        "config"
+        >>> smart_ext("config.py")
+        "config.py"
+        >>> smart_ext("config", ext="py")
+        "config.py"
+        >>> smart_ext("config.py", ext="py")
+        "config.py"
+
+    """
+    if ext is None:
+        return name
+
+    ext = ".%s" % ext if not ext.startswith(".") else ext
+    name = name.strip()
+    existing_ext = name.rsplit(".", 1)[-1]
+
+    if existing_ext == name:  # no ext acctually
+        return "%s%s" % (name, ext)
+
+    return name
+
+
+def split_filenames(names, abspath=None, ext=None):
+    abspath = abspath or (lambda x: x)
+    splited = []
+    for name in names:
+        splited.extend(
+            [abspath(smart_ext(s, ext=ext)) for s in name.split(',')]
+        )
+    return splited
