@@ -69,7 +69,7 @@ class CollectionDict(unittest.TestCase):
 
     def test_keys(self):
         current = set(self.collection.keys())
-        expected = {'protocol', 'URL'}
+        expected = set(['protocol', 'URL'])
         eq(current, expected)
 
     def test_values(self):
