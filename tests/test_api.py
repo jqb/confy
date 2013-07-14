@@ -2,7 +2,7 @@
 import unittest
 import confy
 
-from nose.tools import (
+from .tools import (
     assert_in,
 )
 

@@ -2,18 +2,9 @@
 import unittest
 import confy
 
-from nose.tools import (
-    assert_equal as eq,
+from .tools import (
+    eq, assert_in, assert_not_in
 )
-
-
-# python 2.6 compatibility
-def assert_in(thing, container):
-    assert thing in container, "There's no '%s' in %s" % (thing, repr()[:100])
-
-def assert_not_in(thing, container):
-    assert thing not in container, "'%s' IS in %s, but shouldn't" % (thing, repr()[:100])
-# end
 
 
 class CollectionFeatures(unittest.TestCase):
