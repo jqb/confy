@@ -74,7 +74,7 @@ class CollectionDict(unittest.TestCase):
 
     def test_values(self):
         current = set(self.collection.values())
-        expected = {'http', 'http://something.com'}
+        expected = set(['http', 'http://something.com'])
         eq(current, expected)
 
     def test__eq__(self):
