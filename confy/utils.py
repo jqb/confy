@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 import sys
-import importlib
 from os.path import join, dirname, abspath
 
 import six
+
+from .packages import importlib
 
 
 def create_path_function(thefile):
