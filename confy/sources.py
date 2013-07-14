@@ -78,10 +78,10 @@ class INISource(BaseSource):
         cp = configparser.ConfigParser()
         try:
             cp.read(names)
-            config_as_dict = {
-                section_name: dict(cp[section_name])
+            config_as_dict = dict([
+                (section_name, dict(cp[section_name]))
                 for section_name in cp.sections()
-            }
+            ])
             context.update(config_as_dict)
         except configparser.NoSectionError:
             if not self.silent:
