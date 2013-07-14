@@ -6,6 +6,18 @@ Pragmatic & flexible configuration loader that makes your app settings clean and
 ver. 0.3 beta
 
 
+.. image:: https://api.travis-ci.org/jqb/confy.png?branch=master
+   :target: https://travis-ci.org/jqb/confy
+
+
+Supported platforms
+-------------------
+
+* Python 2.6
+* Python 2.7
+* Python 3.2
+
+
 Idea
 ----
 
@@ -110,14 +122,6 @@ Docs
 ----
 
 You can find documentation here: https://confy.readthedocs.org/en/latest/
-
-
-Supported platforms
--------------------
-
-* Python2.6
-* Python2.7
-* Python3.3
 
 
 Authors
