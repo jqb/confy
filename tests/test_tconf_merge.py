@@ -3,13 +3,12 @@
 import os
 import unittest
 
-import six
-from nose.tools import (
-    assert_equal as eq,
+from .tools import (
+    eq,
+    load_module,
 )
 
 # local
-from . import tconf
 from .fake.backend import FakeBackend
 
 
@@ -22,10 +21,7 @@ class TConfMergeTests(unittest.TestCase):
                 pass
 
     def test_development_mode(self):
-        global tconf
-        os.environ['CONFIGURATION_MODE'] = 'development'
-
-        tconf = six.moves.reload_module(tconf)
+        tconf = load_module('tests.tconf', CONFIGURATION_MODE='development')
 
         eq(tconf.API_ADD, 'http://development.api.com/add/')
         eq(tconf.API_DELETE, 'http://development.api.com/delete/')
@@ -34,10 +30,7 @@ class TConfMergeTests(unittest.TestCase):
         self.cleanup_dict(os.environ, 'CONFIGURATION_MODE')
 
     def test_production_mode(self):
-        global tconf
-        os.environ['CONFIGURATION_MODE'] = 'production'
-
-        tconf = six.moves.reload_module(tconf)
+        tconf = load_module('tests.tconf', CONFIGURATION_MODE='production')
 
         eq(tconf.API_ADD, 'http://production.api.com/add/')
         eq(tconf.API_DELETE, 'http://production.api.com/delete/')
