@@ -1,7 +1,8 @@
 Quick start
 ===========
 
-All the examples here assumes that settings directory looks exactly the same:
+All the examples here assumes that settings directory looks exactly
+the same:
 
    .. code-block:: bash
 
@@ -52,14 +53,17 @@ settings.
 Variables interpolation
 -----------------------
 
-Interpolation is an nice feature in order to make your configuration clean and as simple as possible.
-Confy uses standard python "{variable_name}" interpolation, so you don't need to learn anything new.
-Let's see simple example.
+Interpolation is an nice feature in order to make your configuration
+clean and as simple as possible.  Confy uses standard python
+"{variable_name}" interpolation, so you don't need to learn anything
+new.  Let's see simple example.
 
 
-So if you are using some kind of service inside your application you might want to easily manage
-url's you need to work with to avoid simple and annoying problems with misstyped protocol (http vs https)
-and super-annoing duplication of copy-and-pasting the same root of url.
+So if you are using some kind of service inside your application you
+might want to easily manage url's you need to work with to avoid
+simple and annoying problems with misstyped protocol (http vs https)
+and super-annoing duplication of copy-and-pasting the same root of
+url.
 
 
 Assuming this is content of your "settings/base.py" file:
@@ -68,8 +72,8 @@ Assuming this is content of your "settings/base.py" file:
    :lines: 1-8
 
 
-you can easily change values of "api_domain" in development.py/production.py
-and you don't need to rewrite all the urls once again.
+you can easily change values of "api_domain" in development.py /
+production.py and you don't need to rewrite all the urls once again.
 
 
 Contents of "settings/development.py":
@@ -105,8 +109,9 @@ Contents of "settings/production.py":
 Neasted structures - collections
 --------------------------------
 
-In general keeping settings as flat'n'simple variables is the best idea, however it makes sense
-sometimes to avoid typing the same prefix again and again.
+In general keeping settings as flat'n'simple variables is the best
+idea, however it makes sense sometimes to avoid typing the same prefix
+again and again.
 
 
 Contents of your "base.py" might look like this
@@ -121,7 +126,8 @@ Contents of your "base.py" might look like this
    )
 
 
-Then again, changing domain url is very simple, inside your "development.py"
+Then again, changing domain url is very simple, inside your
+"development.py"
 
 .. code-block:: python
 
@@ -140,23 +146,26 @@ Then again, changing domain url is very simple, inside your "development.py"
    >>> assert config.API.DELETE == 'http://api-development.com/delete/'
 
 
-As you can see it's preatty simple, but two things might be interesting to you.
+As you can see it's preatty simple, but two things might be
+interesting to you.
 
 
 1) global "confy" object?
 
-   yes - it is global helper **buy ONLY inside your settings folder** and it is global
-   only for the time when module is beeing loaded. Thats why It's been decided to use
-   "with confy.loader" statement instead of simple assigment.
+   yes - it is global helper **buy ONLY inside your settings folder**
+   and it is global only for the time when module is beeing
+   loaded. Thats why It's been decided to use "with confy.loader"
+   statement instead of simple assigment.
 
 
 2) "confy.collection"
 
-   creates confy collection object. Basicaly all you need to know is that it
-   behaves exactly as a dictionary, and has additional features like to recognize
-   "{interpolation_variables}" and ability to use __getitem__ notation for keys if
-   you want to (keys might be non-identifiers as well - but ofcourse you won't be able
-   to get them with "." notation).
+   creates confy collection object. Basicaly all you need to know is
+   that it behaves exactly as a dictionary, and has additional
+   features like to recognize "{interpolation_variables}" and ability
+   to use __getitem__ notation for keys if you want to (keys might be
+   non-identifiers as well - but ofcourse you won't be able to get
+   them with "." notation).
 
    .. code-block:: python
 
@@ -167,9 +176,10 @@ As you can see it's preatty simple, but two things might be interesting to you.
 Lazy property
 -------------
 
-Having interpolation property is nice feature but it very rarely happens that you need
-more flexibility. "lazy" property is allowing you to create property-like function that'll
-be invoked to calculate value.
+Having interpolation property is nice feature but it very rarely
+happens that you need more flexibility. "lazy" property is allowing
+you to create property-like function that'll be invoked to calculate
+value.
 
 .. code-block:: python
 
@@ -187,8 +197,9 @@ be invoked to calculate value.
 Lazy import property
 --------------------
 
-It's often practice to store complete path to "somekind.of.BackendClass" in settings file.
-Hovever you always need to write code that will later use it to acctualy import the think.
+It's often practice to store complete path to
+"somekind.of.BackendClass" in settings file.  Hovever you always need
+to write code that will later use it to acctualy import the think.
 You can stop thinking about it:
 
 .. code-block:: python
@@ -206,7 +217,8 @@ You can stop thinking about it:
 Raw propery
 -----------
 
-Ok - but you really want to use "{}" chars inside your setting string - exactly as they are. - No problem:
+Ok - but you really want to use "{}" chars inside your setting
+string - exactly as they are. - No problem:
 
 
 .. code-block:: python
