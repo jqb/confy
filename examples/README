@@ -1,0 +1,9 @@
+This folder contains examples how "confy" configuration loader might be used.
+
+Contents:
+
+- sample_email_backend: very simple and totaly fake python module just
+  to be able to show "confy" lazy importing features
+
+- settings: module that contains sample configuration and explains how
+  the things are working
