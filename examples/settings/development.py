@@ -11,3 +11,9 @@ DBSETTINGS.update(
 
 # 2) Using interpolation you can change only interesting part
 AWS_S3_CONTENT_URL = '{AWS_S3_CONTENT_URL}/content-development'
+
+
+# 3) email backend stays the same - dummy one
+
+
+# 4) no changes for path to static files

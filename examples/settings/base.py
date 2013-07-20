@@ -16,3 +16,10 @@ AWS_S3_CONTENT_URL = '{AWS_S3_CONTENT_URL}/content'
 
 # 3) Importing backend classes example
 EMAIL_BACKEND = confy.lazyimport('sample_email_backend.DummyEmailBackend')
+
+
+# 4) relative paths
+# with confy you can always define your paths relatively to your settings module
+# SETTINGS_ROOT = confy.rootpath()               # /path/to/project/settings
+# PROJECT_ROOT = confy.rootpath('..')            # /path/to/project
+STATIC_FILES = confy.rootpath('..', 'static')    # /path/to/project/static
