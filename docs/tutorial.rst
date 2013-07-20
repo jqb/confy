@@ -9,20 +9,44 @@ All the examples here assumes that settings directory looks exactly the same:
          |-- __init__.py
          |-- base.py
          |-- development.py
-         `-- production.py
+         |-- production.py
+         `-- local.py
 
 
 Content of settings/__init__.py is also the same:
 
    .. code-block:: python
+      :linenos:
 
         import confy
 
         with confy.loader(__file__) as confy:
             config = confy.merge(
-                confy.from_modules('base', confy.env('CONFIGURATION_MODE', 'development')),
+                confy.from_modules('base', 'development'),
+                confy.from_modules('local', silent=True),
             )
 
+
+Let's just explain what short snippet in settings/__init__.py means.
+
+In line no 3 we're defining a loader. The important thing here is that
+we are passing __file__ variable into loader constructor. This makes
+our loader aware of possition in the file system where are settings
+are and moreover gives usefull "confy.rootpath" method (we'll explain
+it later).
+
+Lines 4-7 loades and merges settings from the sources. For sake of
+simplicity here we're loading settings only from python modules, but
+later we gonna explain other possible configuration sources, too.
+
+Line no 5 loads two modules ('base' and 'development') one after
+another.
+
+Line no 6 loads module 'local'. 'silent' param set to True means that
+confy won't complain if there's no such module like 'local'. In other
+words you can use it to conditionaly load modules (and other settings
+sources). This is convinent to configure environment specific
+settings.
 
 
 Variables interpolation
