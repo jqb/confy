@@ -68,7 +68,7 @@ url.
 
 Assuming this is content of your "settings/base.py" file:
 
-.. literalinclude:: ../tests/tconf/base.py
+.. literalinclude:: ../tests/tconf/data/base.py
    :lines: 1-8
 
 
@@ -78,7 +78,7 @@ production.py and you don't need to rewrite all the urls once again.
 
 Contents of "settings/development.py":
 
-.. literalinclude:: ../tests/tconf/development.py
+.. literalinclude:: ../tests/tconf/data/development.py
    :lines: 4,5
 
 .. code-block:: python
@@ -92,7 +92,7 @@ Contents of "settings/development.py":
 
 Contents of "settings/production.py":
 
-.. literalinclude:: ../tests/tconf/production.py
+.. literalinclude:: ../tests/tconf/data/production.py
    :lines: 4,5
 
 
