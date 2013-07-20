@@ -50,6 +50,30 @@ sources). This is convinent to configure environment specific
 settings.
 
 
+Paths to resources
+------------------
+
+This is a common problem for web aplications, that you need to
+configure absolute path to the folder with your static files or other
+resources.
+
+With "confy" you can simply define the paths relatively to your
+settings folder.  Here's how to do that.
+
+Inside "settings/base.py" you can put the following snippet:
+
+.. code-block:: python
+
+   # SETTINGS_ROOT = confy.rootpath()               # /path/to/project/settings
+   # PROJECT_ROOT = confy.rootpath('..')            # /path/to/project
+   STATIC_FILES = confy.rootpath('..', 'static')    # /path/to/project/static
+
+
+As you can see the path inside "confy.rootpath" is always calculated
+relatively to "settings" folder.
+
+
+
 Variables interpolation
 -----------------------
 
