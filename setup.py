@@ -23,7 +23,7 @@ setup(
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.2',
     ],
-    packages=find_packages(exclude=("tests*",)),
+    packages=find_packages(exclude=("tests*", "examples*")),
     include_package_data = True,
     zip_safe=False,
     install_requires = [
