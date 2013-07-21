@@ -5,6 +5,8 @@ Pragmatic & flexible configuration loader that makes your app settings clean and
 
 ver. 0.3 beta
 
+.. image:: https://badge.fury.io/py/confy.png
+   :target: https://badge.fury.io/py/confy
 
 .. image:: https://api.travis-ci.org/jqb/confy.png?branch=master
    :target: https://travis-ci.org/jqb/confy
