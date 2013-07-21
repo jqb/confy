@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-VERSION = '0.3beta'
+VERSION = '0.3.1beta'
 
 
 from .api import Loader

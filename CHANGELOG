@@ -1,3 +1,8 @@
+ver 0.3.1 beta
+- collection.Module is nolonger lazy since it makes it unreadable by django settings loader
+- tox, travis, coverage added
+- tests are now run by py.test
+
 ver 0.3 beta:
 - api incompatibile change: from_<source> function are not longer return "confy.collection"
 - support for ini files added
