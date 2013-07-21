@@ -2,10 +2,6 @@
 import unittest
 import confy
 
-from .tools import (
-    eq, assert_in, assert_not_in
-)
-
 
 class CollectionFeatures(unittest.TestCase):
     def setUp(self):
@@ -26,24 +22,24 @@ class CollectionFeatures(unittest.TestCase):
         API = self.settings.API
         API.root = 'http://api.veryfancy.com'
 
-        eq(API.GET_OBJECT, 'http://api.veryfancy.com/get')
-        eq(API.ADD_OBJECT, 'http://api.veryfancy.com/add')
-        eq(API.REMOVE_OBJECT, 'http://api.veryfancy.com/remove')
+        assert API.GET_OBJECT == 'http://api.veryfancy.com/get'
+        assert API.ADD_OBJECT == 'http://api.veryfancy.com/add'
+        assert API.REMOVE_OBJECT == 'http://api.veryfancy.com/remove'
 
     def test_lazyimport(self):
         from tests.fake.backend import FakeBackend
-        eq(self.settings.FAKE_BACKEND_CLASS, FakeBackend)
+        assert self.settings.FAKE_BACKEND_CLASS == FakeBackend
 
     def test_lazyimport_module(self):
         from tests.fake import backend
-        eq(self.settings.FAKE_BACKEND_MODULE, backend)
+        assert self.settings.FAKE_BACKEND_MODULE == backend
 
     def test_raw(self):
-        eq(self.settings.RAW_VALUE, '{with "raw" I can put {} as many special things as I want}')
+        assert self.settings.RAW_VALUE == '{with "raw" I can put {} as many special things as I want}'
 
     def test_lazy_evaluation_should_work_as_a_charm(self):
         api = self.settings.API
-        eq(self.settings.URLS, "%s %s" % (api.GET_OBJECT, api.ADD_OBJECT))
+        assert self.settings.URLS == "%s %s" % (api.GET_OBJECT, api.ADD_OBJECT)
 
 
 class CollectionDict(unittest.TestCase):
@@ -55,27 +51,27 @@ class CollectionDict(unittest.TestCase):
 
     def test__contains__should_work_as_expected(self):
         value = self.collection.get('URL')
-        eq(value, 'http://something.com')
-        assert_in('URL', self.collection)
+        assert value == 'http://something.com'
+        assert 'URL' in self.collection
 
         value = self.collection.pop('URL')
-        eq(value, 'http://something.com')
-        assert_not_in('URL', self.collection)
+        assert value == 'http://something.com'
+        assert 'URL' not in self.collection
 
     def test_pop_should_return_value_not_property(self):
         value = self.collection.pop('URL')
-        eq(value, 'http://something.com')
-        assert_not_in('URL', self.collection)
+        assert value == 'http://something.com'
+        assert 'URL' not in self.collection
 
     def test_keys(self):
         current = set(self.collection.keys())
         expected = set(['protocol', 'URL'])
-        eq(current, expected)
+        assert current == expected
 
     def test_values(self):
         current = set(self.collection.values())
         expected = set(['http', 'http://something.com'])
-        eq(current, expected)
+        assert current == expected
 
     def test__eq__(self):
         assert self.collection == dict(self.collection)
