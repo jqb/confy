@@ -6,7 +6,7 @@ import six
 
 from .properties import (
     LazyProperty, RawProperty, InterpolationProperty,
-    ImporterProperty, ValueProperty,
+    ImporterProperty, ValueProperty, LazyRootpathProperty,
 )
 
 
@@ -14,6 +14,7 @@ class Collection(object):
 
     # For extendibility purposes we might want to change / add some properties
     property_classes = [
+        LazyRootpathProperty,
         LazyProperty,
         RawProperty,
         InterpolationProperty,

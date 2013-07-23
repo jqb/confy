@@ -3,7 +3,7 @@ import os
 import sys
 
 from .utils import create_path_function, extrabuiltins, syspath, Importer, split_filenames
-from .collection import Collection, RawProperty, LazyProperty, Module
+from .collection import Collection, RawProperty, LazyProperty, Module, LazyRootpathProperty
 from .sources import ModuleSource, EnvironmentVariableSource, INISource
 
 
@@ -12,16 +12,12 @@ class Loader(object):
     lazyimport = Importer
     lazy = LazyProperty
     raw = RawProperty
+    rootpath = LazyRootpathProperty
 
     def __init__(self, file=None, syspaths=None):
-        self._file = file
+        self._file = file or '.'
         self._syspaths = syspaths or ['.']
-
-        if self._file:
-            self.rootpath = create_path_function(self._file)
-        else:
-            self.rootpath = None
-
+        self._rootpath = create_path_function(self._file)
         self._factories = {}
 
     # experimental api
@@ -40,7 +36,9 @@ class Loader(object):
 
     # api
     def merge(self, *sources):
-        context = {}
+        context = {
+            '__rootfile__': self._file,
+        }
         for s in sources:
             context = s.load(context)
         return self.collection(**context)
@@ -53,7 +51,7 @@ class Loader(object):
 
     def from_modules(self, *files, **kwargs):
         return ModuleSource(
-            names=split_filenames(files, abspath=self.rootpath, ext=kwargs.get('ext', 'py')),
+            names=split_filenames(files, abspath=self._rootpath, ext=kwargs.get('ext', 'py')),
             silent=kwargs.get('silent'),
         )
 
@@ -66,7 +64,7 @@ class Loader(object):
 
     def from_ini(self, *files, **kwargs):
         return INISource(
-            names=split_filenames(files, abspath=self.rootpath, ext=kwargs.get('ext', 'ini')),
+            names=split_filenames(files, abspath=self._rootpath, ext=kwargs.get('ext', 'ini')),
             silent=kwargs.get('silent')
         )
 

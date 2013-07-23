@@ -15,3 +15,4 @@ env = Loader.env
 lazyimport = Loader.lazyimport
 lazy = Loader.lazy
 raw = Loader.raw
+rootpath = Loader.rootpath

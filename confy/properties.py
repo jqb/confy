@@ -3,7 +3,7 @@ import re
 
 import six
 
-from .utils import Importer
+from .utils import Importer, create_path_function
 
 
 class BaseProperty(object):
@@ -113,6 +113,29 @@ class LazyProperty(BaseProperty):
     @property
     def raw_value(self):
         return self.__get
+
+    @classmethod
+    def build(cls, name, value):
+        if isinstance(value, cls):
+            return value, True
+        return None, False
+
+
+class LazyRootpathProperty(BaseProperty):
+    def __init__(self, *path):
+        self.path_args = path
+        self.__rootpath = None
+
+    def get(self, instance):
+        rootpath_function = self.__rootpath
+        if not rootpath_function:
+            rootpath_function = create_path_function(instance['__rootfile__'])
+            self.__rootpath = rootpath_function
+        return rootpath_function(*self.path_args)
+
+    @property
+    def raw_value(self):
+        return self.path_args
 
     @classmethod
     def build(cls, name, value):
