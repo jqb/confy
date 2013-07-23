@@ -9,6 +9,9 @@
 # Configuration file docs:
 # http://nedbatchelder.com/code/coverage/config.html
 
+
 [run]
 branch = true
 source = confy
+omit =
+   confy/packages/*
