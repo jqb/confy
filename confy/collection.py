@@ -167,7 +167,7 @@ class Collection(object):
 
     def __eq__(self, other):
         if not isinstance(other, Mapping):
-            return NotImplemented
+            return False
         return dict(self.items()) == dict(other.items())
 
     def __ne__(self, other):
