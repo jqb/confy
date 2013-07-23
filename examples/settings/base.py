@@ -11,7 +11,7 @@ DBSETTINGS = confy.collection(
 
 # 2) Interpolation example, take a look into development.py and production.py
 AWS_S3_DOMAIN = 'http://s3-eu-west-1.amazonaws.com'
-AWS_S3_CONTENT_URL = '{AWS_S3_CONTENT_URL}/content'
+AWS_S3_CONTENT_URL = '{AWS_S3_DOMAIN}/content'
 
 
 # 3) Importing backend classes example
