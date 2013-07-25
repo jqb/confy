@@ -31,8 +31,8 @@ class CollectionFeatures(unittest.TestCase):
             RAW_VALUE = confy.raw('{with "raw" I can put {} as many special things as I want}'),
             URLS = confy.lazy(lambda self: "%s %s" % (self.API.GET_OBJECT, self.API.ADD_OBJECT)),
 
-            # rootpath works only in conjunction with __rootfile__ variable
-            __rootfile__ = '/path/to/project/settings/__init__.py',
+            # rootpath works only in conjunction with __rootpath__ variable
+            __rootpath__ = '/path/to/project/settings/__init__.py',
             PROJECT_ROOT = confy.rootpath('..'),
         )
 

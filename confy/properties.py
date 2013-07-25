@@ -129,7 +129,7 @@ class LazyRootpathProperty(BaseProperty):
     def get(self, instance):
         rootpath_function = self.__rootpath
         if not rootpath_function:
-            rootpath_function = create_path_function(instance['__rootfile__'])
+            rootpath_function = create_path_function(instance['__rootpath__'])
             self.__rootpath = rootpath_function
         return rootpath_function(*self.path_args)
 

@@ -37,7 +37,7 @@ class Loader(object):
     # api
     def merge(self, *sources):
         context = {
-            '__rootfile__': self._file,
+            '__rootpath__': self._file,
         }
         for s in sources:
             context = s.load(context)
