@@ -1,3 +1,10 @@
+var 0.3.2 beta
+- a lot of tests added, coverage improved, internall collection api changed, a lot of bugs fixed
+- rootpath implementation changed; it's totaly lazy now which means confy
+  can be from now on imported inside settings files
+- few python2.6 fixes
+- readme improved, examples simplified
+
 ver 0.3.1 beta
 - collection.Module is nolonger lazy since it makes it unreadable by django settings loader
 - tox, travis, coverage added
