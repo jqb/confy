@@ -14,6 +14,8 @@ ver. 0.3.1 beta
 .. image:: https://coveralls.io/repos/jqb/confy/badge.png?branch=master
    :target: https://coveralls.io/r/jqb/confy?branch=master
 
+.. image:: https://pypip.in/d/confy/badge.png
+   :target: https://crate.io/packages/confy/
 
 
 Supported platforms
