@@ -6,5 +6,9 @@ python:
   - "3.3"
 install:
   - "pip install -r requirements.txt --use-mirrors"
+  - "pip install coveralls"
 script:
   - "python runtests.py"
+  - "coverage run --source=confy runtests.py"
+after_success:
+  - coveralls
