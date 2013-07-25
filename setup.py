@@ -8,7 +8,7 @@ import confy
 setup(
     name='confy',
     version=confy.VERSION,
-    description=open('README.rst', 'r').read(),
+    description='',
     author='Jakub Janoszek',
     author_email='kuba.janoszek@gmail.com',
     url='https://pypi.python.org/pypi/confy',
