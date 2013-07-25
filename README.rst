@@ -11,6 +11,10 @@ ver. 0.3.1 beta
 .. image:: https://api.travis-ci.org/jqb/confy.png?branch=master
    :target: https://travis-ci.org/jqb/confy
 
+.. image:: https://coveralls.io/repos/jqb/confy/badge.png?branch=master
+   :target: https://coveralls.io/r/jqb/confy?branch=master
+
+
 
 Supported platforms
 -------------------
