@@ -13,9 +13,9 @@ def create_path_function(thefile):
 
 
 class extrabuiltins(object):
-    def __init__(self, things):
-        self.things = things
-        self.builtins = six.moves.builtins
+    def __init__(self, things, builtins=None):
+        self.things = things or {}
+        self.builtins = builtins or six.moves.builtins
 
     def extend(self):
         for name, thing in self.things.items():
@@ -35,18 +35,16 @@ class extrabuiltins(object):
 
 class syspath(object):
     def __init__(self, paths, sys_path=None):
-        self.paths = paths
-        self.sys_path = sys_path or sys.path
+        self.paths = paths or []
+        self.sys_path = sys.path if sys_path == None else sys_path
 
     def extend(self):
-        if self.paths:
-            for path in reversed(self.paths):
-                self.sys_path.insert(0, path)
+        for path in reversed(self.paths):
+            self.sys_path.insert(0, path)
 
     def cleanup(self):
-        if self.paths:
-            for path in reversed(self.paths):
-                self.sys_path.remove(path)
+        for path in reversed(self.paths):
+            self.sys_path.remove(path)
 
     def __enter__(self):
         self.extend()
@@ -79,12 +77,13 @@ class Importer(object):
             item = importlib.import_module(path_to_item)
 
             if last_item is None:
+                self.__importeditem = item
                 return item
 
             try:
                 self.__importeditem = getattr(item, last_item)
             except AttributeError as e:
-                raise AttributeError("Module '%s': => %s" % (path_to_item, e.message))
+                raise ImportError("Module '%s': => %s" % (path_to_item, six.text_type(e)))
         return self.__importeditem
 
 
