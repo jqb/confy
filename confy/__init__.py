@@ -3,6 +3,7 @@ VERSION = '0.3.1beta'
 
 
 from .api import Loader
+from .collection import Module
 from .properties import (
     BaseProperty, ValueProperty, InterpolationProperty, ImporterProperty,
     RawProperty, LazyProperty,

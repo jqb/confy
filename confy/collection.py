@@ -174,13 +174,22 @@ class Collection(object):
         return not (self == other)
 
     # Extra *Collection* methods
-    def raw_items(self):
+    def properties(self):
         return [(name, self.__data[name]) for name in self.keys()]
 
     def extend(self, *args, **kwargs):
-        attrs = Collection(self.raw_items())
+        attrs = Collection(self.properties())
         attrs.update(*args, **kwargs)
         return attrs
+
+    def raw(self, name):
+        return self.__raw(name)
+
+    def raw_items(self):
+        return [(name, self.__raw(name)) for name in self.keys()]
+
+    def raw_values(self):
+        return [self.__raw(name) for name in self.keys()]
     # end
 
     def __str__(self):

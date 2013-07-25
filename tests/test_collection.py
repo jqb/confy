@@ -129,6 +129,9 @@ class CollectionDict(unittest.TestCase):
         except TypeError:
             self.fail("Update should work with just one positional argument")
 
+    def test_update_that_runs_on_class_complains_about_on_arguments(self):
+        self.assertRaises(TypeError, confy.collection.update)
+
     def test_update_works_also_with_non_mappings_and_iterables_of_tuples(self):
         assert 'key' not in self.collection
         self.collection.update(NonMapping())
@@ -170,8 +173,8 @@ class CollectionDict(unittest.TestCase):
     def test_iteritems(self):
         assert list(self.collection.items()) == list(self.collection.iteritems())
 
-    def test_raw_items(self):
-        assert len(self.collection.raw_items()) == 2
+    def test_properties(self):
+        assert len(self.collection.properties()) == 2
 
     def test_extend(self):
         result = self.collection.extend({
@@ -179,3 +182,50 @@ class CollectionDict(unittest.TestCase):
         })
         assert result != self.collection
         assert 'key' in result
+
+    def test_raw(self):  # returns raw value
+        raw_value = self.collection.raw('URL')
+        assert raw_value == '{protocol}://something.com'
+
+    def test_raw_items(self):
+        raw_items = self.collection.raw_items()
+        assert len(raw_items) == 2
+
+        keys = set()
+        values = set()
+        for name, raw_value in raw_items:
+            keys.add(name)
+            values.add(raw_value)
+
+        expected_keys = set([
+            'protocol', 'URL'
+        ])
+        assert expected_keys == keys
+
+        expected_values = set([
+            'http', '{protocol}://something.com'
+        ])
+        assert expected_values == values
+
+    def test_raw_values(self):
+        expected_values = set([
+            'http', '{protocol}://something.com'
+        ])
+        assert expected_values == set(self.collection.raw_values())
+
+    def test_setitem(self):
+        self.collection['hello'] = 'world'
+        assert self.collection.hello == 'world'
+        assert 'world' in self.collection.values()
+
+
+class CollectionModule(unittest.TestCase):
+    def setUp(self):
+        self.collection = confy.collection(
+            protocol = "http",
+            URL = "{protocol}://something.com",
+        )
+        self.module = confy.Module('settings', 'unexisted/settings/__init__.pyc', self.collection)
+
+    def test_supports_getitem_protocol(self):
+        assert self.module['protocol'] == 'http'

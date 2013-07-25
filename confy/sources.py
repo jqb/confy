@@ -25,8 +25,6 @@ class ModuleSource(BaseSource):
         return context
 
     def _after_execfile(self, context, module_name):
-        if 'MODE' not in context:
-            context.update(MODE=module_name)
         return context
 
     def load(self, context):
@@ -43,7 +41,7 @@ class EnvironmentVariableSource(BaseSource):
     def __init__(self, names, silent=False, environ=None):
         self.names = names
         self.silent = silent
-        self.environ = environ
+        self.environ = environ or os.environ
 
     def load(self, context):
         data = {}
@@ -62,9 +60,10 @@ class EnvironmentVariableSource(BaseSource):
 
 
 class INISource(BaseSource):
-    def __init__(self, names, silent=False):
+    def __init__(self, names, sections=None, silent=False):
         self.names = names
         self.silent = silent
+        self.sections = sections  # None means ALL
 
     def load(self, context):
         import configparser
@@ -76,14 +75,16 @@ class INISource(BaseSource):
             names.append(name)
 
         cp = configparser.ConfigParser()
+        cp.read(names)
+
+        sections = self.sections or cp.sections()
         try:
-            cp.read(names)
             config_as_dict = dict([
                 (section_name, dict(cp[section_name]))
-                for section_name in cp.sections()
+                for section_name in sections
             ])
             context.update(config_as_dict)
-        except configparser.NoSectionError:
+        except KeyError:  # cp[<key>] raises KeyError not NoSectionError
             if not self.silent:
                 raise
 

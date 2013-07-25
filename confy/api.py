@@ -43,11 +43,8 @@ class Loader(object):
             context = s.load(context)
         return self.collection(**context)
 
-    def module(self, name, sources, add_to_sysmodules=True):
-        module = Module(name, self._file, self.merge(*sources))
-        if add_to_sysmodules:
-            sys.modules[name] = module
-        return module
+    def module(self, name, sources):
+        sys.modules[name] = Module(name, self._file, self.merge(*sources))
 
     def from_modules(self, *files, **kwargs):
         return ModuleSource(
@@ -69,24 +66,20 @@ class Loader(object):
         )
 
     @classmethod
-    def env(cls, name, default=None, environ=None):
-        environ = environ or os.environ
-        return environ.get(name, default)
+    def env(cls, name, default=None):
+        return os.environ.get(name, default)
     # end
 
     # processing configuration
     def _get_syspath(self, paths=None):
         syspaths = paths or []
         syspaths.extend(self._syspaths)
-        if not self.rootpath:
-            return []
-        return [self.rootpath(*s.split(os.sep)) for s in syspaths]
+        return [self._rootpath(*s.split(os.sep)) for s in syspaths]
 
-    def _get_extrabuildins(self, extrabuiltins=None):
-        extras = extrabuiltins or {}
-        if 'confy' not in extras:
-            extras['confy'] = self
-        return extras
+    def _get_extrabuildins(self):
+        return {
+            'confy': self
+        }
     # end
 
     # context manager support
