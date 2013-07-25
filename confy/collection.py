@@ -173,6 +173,9 @@ class Collection(object):
     def __ne__(self, other):
         return not (self == other)
 
+    def __len__(self):
+        return len(self.__data)
+
     # Extra *Collection* methods
     def properties(self):
         return [(name, self.__data[name]) for name in self.keys()]
