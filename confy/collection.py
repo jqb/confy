@@ -103,7 +103,7 @@ class Collection(object):
 
         if args_len > 2:
             raise TypeError(
-                "update() takes at most 2 positional arguments ({} given)".format(args_len)
+                "update() takes at most 2 positional arguments ({0} given)".format(args_len)
             )
         elif not args:
             raise TypeError("update() takes at least 1 argument (0 given)")
