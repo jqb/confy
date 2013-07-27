@@ -2,6 +2,8 @@
 import os
 import sys
 
+from collections import Mapping
+
 from .utils import create_path_function, extrabuiltins, syspath, Importer, split_filenames
 from .collection import Collection, RawProperty, LazyProperty, Module, LazyRootpathProperty
 from .sources import ModuleSource, EnvironmentVariableSource, INISource
@@ -35,13 +37,25 @@ class Loader(object):
     # end
 
     # api
-    def merge(self, *sources):
-        context = {
+    def _new_collection(self, *args, **kwargs):
+        kwargs.update({
             '__rootpath__': self._file,
-        }
+        })
+        return self.collection(*args, **kwargs)
+
+    def _convert(self, adict):
+        for key in list(adict.keys()):
+            value = adict[key]
+            if isinstance(value, Mapping):
+                adict[key] = self._new_collection(self._convert(value))
+        return self._new_collection(adict)
+
+    def merge(self, *sources):
+        context = {}
         for s in sources:
             context = s.load(context)
-        return self.collection(**context)
+        context = self._convert(context)
+        return self._new_collection(**context)
 
     def module(self, name, sources):
         sys.modules[name] = Module(name, self._file, self.merge(*sources))
