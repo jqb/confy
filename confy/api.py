@@ -15,7 +15,7 @@ class Loader(object):
     rootpath = LazyRootpathProperty
 
     def __init__(self, file=None, syspaths=None):
-        self._file = file or '.'
+        self._file = file or './_current_directory_'
         self._syspaths = syspaths or ['.']
         self._rootpath = create_path_function(self._file)
         self._factories = {}
