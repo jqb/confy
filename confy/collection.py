@@ -31,6 +31,33 @@ class Collection(object):
     # end
 
 
+    # collectionize
+    @classmethod
+    def collectionize(cls, adict, defaults=None):
+        """ Change a dict into a collection. All inner dictionaries
+        are changed into collections as well.
+
+        :param adict: dictionary (collections.Mapping) alike object
+        :param defaults: default attributes that will be added to all
+        new collection objects
+        """
+
+        def new(adict):
+            c = cls(defaults or {})
+            c.update(adict)
+            return c
+
+        def convert(adict):
+            for key in list(adict.keys()):
+                value = adict[key]
+                if isinstance(value, Mapping):
+                    adict[key] = new(convert(value))
+            return new(adict)
+
+        return convert(adict)
+    # end
+
+
     def __init__(self, *args, **kwargs):
         dict_data_key = "_%s__data" % self.__class__.__name__
         self.__dict__.update({
