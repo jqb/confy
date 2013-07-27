@@ -2,8 +2,6 @@
 import os
 import sys
 
-from collections import Mapping
-
 from .utils import create_path_function, extrabuiltins, syspath, Importer, split_filenames
 from .collection import Collection, RawProperty, LazyProperty, Module, LazyRootpathProperty
 from .sources import ModuleSource, EnvironmentVariableSource, INISource
