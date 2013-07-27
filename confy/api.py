@@ -78,10 +78,6 @@ class Loader(object):
             names=split_filenames(files, abspath=self._rootpath, ext=kwargs.get('ext', 'ini')),
             silent=kwargs.get('silent')
         )
-
-    @classmethod
-    def env(cls, name, default=None):
-        return os.environ.get(name, default)
     # end
 
     # processing configuration

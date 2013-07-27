@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import confy
 
 
@@ -11,16 +12,7 @@ with confy.loader(__file__) as confy:
     # all the settings defined inside 'base', 'development'
     # (or other file which name might be defined under 'CONFIGURATION_MODE'
     # environ variable), and 'local' modules
-    #
-    # The following lines gives exactly the same effect::
-    #
-    #    >>> import confy
-    #    >>> import os
-    #    >>>
-    #    >>> confy.env('ENV_NAME', 'dev') == os.environ.get('ENV_NAME', 'dev')
-    #    True
-    #
     config = confy.merge(
-        confy.from_modules('base', confy.env('CONFIGURATION_MODE', 'development')),
+        confy.from_modules('base', os.environ.get('CONFIGURATION_MODE', 'development')),
         confy.from_modules('local', silent=True),
     )

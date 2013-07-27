@@ -13,7 +13,7 @@ class ConfyModuleAPI(unittest.TestCase):
             'LazyProperty', 'RawProperty', 'ValueProperty',
 
             # loader and all the falks
-            'Loader', 'loader', 'collection', 'env', 'lazyimport', 'lazy', 'raw',
+            'Loader', 'loader', 'collection', 'lazyimport', 'lazy', 'raw',
 
             # submodules
             'utils', 'properties', 'api'

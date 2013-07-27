@@ -11,7 +11,6 @@ from .properties import (
 
 loader = Loader
 collection = Loader.collection
-env = Loader.env
 
 lazyimport = Loader.lazyimport
 lazy = Loader.lazy
