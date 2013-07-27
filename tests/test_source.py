@@ -21,6 +21,7 @@ class ModuleSourceTest(unittest.TestCase):
             'CONTENTURL',
             'SITECONTENTURL',
             'FAKE_BACKEND_CLASS',
+            'DATABASE',
         ])
 
         ctx = source.load({

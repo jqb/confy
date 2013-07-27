@@ -14,3 +14,18 @@ SITECONTENTURL = '{s3_assets_domain}/project-assets/sitecontent/'
 
 
 FAKE_BACKEND_CLASS = confy.lazyimport('tests.fake.backend.FakeBackend')
+
+
+DATABASE = {
+    'ENGINE': confy.lazyimport('tests.fake.backend.FakeBackend'),
+    'NAME': 'testdb',
+    'USER': 'test',
+    'PASSWORD': 'test',
+    'HOST': 'test.db.com',
+    'PORT': '9000',
+
+    'testdata': {
+        # this file does not exists, just cheking if this dict will changed into collection
+        'fixtures': confy.rootpath('..', 'fixtures', 'testdata.json')
+    },
+}
