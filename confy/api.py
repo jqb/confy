@@ -34,16 +34,32 @@ class Loader(object):
         return object.__getattribute__(self, name)
     # end
 
+    # processing configuration
+    def _get_syspath(self):
+        return [self._rootpath(*s.split(os.sep)) for s in self._syspaths]
+
+    def _get_extrabuildins(self):
+        return {
+            'confy': self
+        }
+    # end
+
     # api
     def merge(self, *sources):
-        context = {}
-        for s in sources:
-            context = s.load(context)
+        def do_merge(context):
+            for s in sources:
+                context = s.load(context)
+            return context
+
+        with syspath(self._get_syspath()):
+            with extrabuiltins(self._get_extrabuildins()):
+                context = do_merge({})
+
         return Collection.collectionize(context, defaults={
             '__rootpath__': self._file,
         })
 
-    def module(self, name, sources):
+    def define_module(self, name, sources):
         sys.modules[name] = Module(name, self._file, self.merge(*sources))
 
     def from_modules(self, *files, **kwargs):
@@ -64,31 +80,4 @@ class Loader(object):
             names=split_filenames(files, abspath=self._rootpath, ext=kwargs.get('ext', 'ini')),
             silent=kwargs.get('silent')
         )
-    # end
-
-    # processing configuration
-    def _get_syspath(self, paths=None):
-        syspaths = paths or []
-        syspaths.extend(self._syspaths)
-        return [self._rootpath(*s.split(os.sep)) for s in syspaths]
-
-    def _get_extrabuildins(self):
-        return {
-            'confy': self
-        }
-    # end
-
-    # context manager support
-    def __enter__(self):
-        self._ctx_syspath = syspath(self._get_syspath())
-        self._ctx_extrabuildins = extrabuiltins(self._get_extrabuildins())
-        self._ctx_syspath.extend()
-        self._ctx_extrabuildins.extend()
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self._ctx_syspath.cleanup()
-        self._ctx_extrabuildins.cleanup()
-        del self._ctx_syspath
-        del self._ctx_extrabuildins
     # end

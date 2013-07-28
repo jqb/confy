@@ -21,11 +21,11 @@ Content of settings/__init__.py is also the same:
 
         import confy
 
-        with confy.loader(__file__) as confy:
-            config = confy.merge(
-                confy.from_modules('base', 'development'),
-                confy.from_modules('local', silent=True),
-            )
+        confy = confy.loader(__file__)
+        config = confy.merge(
+            confy.from_modules('base', 'development'),
+            confy.from_modules('local', silent=True),
+        )
 
 
 Let's just explain what short snippet in settings/__init__.py means.

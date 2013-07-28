@@ -2,7 +2,7 @@
 
 
 # 1) Collection example
-DBSETTINGS = confy.collection(
+DBSETTINGS = dict(
     user='user',
     password='pass',
     host='localhost',

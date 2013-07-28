@@ -3,7 +3,9 @@ import os
 import confy
 
 
-with confy.loader(__file__) as confy:
-    confy.module(__name__, [
-        confy.from_modules('data/base', os.environ.get('CONFIGURATION_MODE', 'data/development')),
-    ])
+confy =  confy.loader(__file__)
+
+
+confy.define_module(__name__, [
+    confy.from_modules('data/base', os.environ.get('CONFIGURATION_MODE', 'data/development')),
+])
