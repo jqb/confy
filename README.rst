@@ -3,7 +3,7 @@ confy
 
 Pragmatic & flexible configuration loader that makes your app settings clean and sexy.
 
-ver. 0.3.2 beta
+ver. 0.3.3
 
 .. image:: https://badge.fury.io/py/confy.png
    :target: https://badge.fury.io/py/confy
@@ -60,11 +60,12 @@ community, but has been never standardized. Here it is:
         import os
         import confy
 
-        with confy.loader(__file__) as confy:
-            config = confy.merge(
-                confy.from_modules('base', os.environ.get('ENV', 'development')),
-                confy.from_modules('local', silent=True),
-            )
+        confy = confy.loader(__file__)
+
+        config = confy.merge(
+            confy.from_modules('base', os.environ.get('ENV', 'development')),
+            confy.from_modules('local', silent=True),
+        )
 
 
 3) so in the end of the day you can simply import it easily and
@@ -118,23 +119,24 @@ and where you want to keep configuration.
     import os
     import confy
 
-    with confy.loader(__file__) as confy:
-        config = confy.merge(
+    confy = confy.loader(__file__)
 
-            # primarily read modules
-            confy.from_modules('base', os.environ.get('ENV', 'development')),
-            confy.from_modules('local', silent=True),  # no complains if no 'local.py'
+    config = confy.merge(
 
-            # if you'd like to setup things directly through your
-            # environment variables, here's how you can do that
-            confy.from_environ_vars([
-                'DB_USER',
-                'DB_PASS'
-            ], silent=True),  # if environ vars are not set it's not a problem
+        # primarily read modules
+        confy.from_modules('base', os.environ.get('ENV', 'development')),
+        confy.from_modules('local', silent=True),  # no complains if no 'local.py'
 
-            # if need additional data from ini files - no problem
-            confy.from_ini('~/.project_sensitive_data.ini', silent=True),
-        )
+        # if you'd like to setup things directly through your
+        # environment variables, here's how you can do that
+        confy.from_environ_vars([
+            'DB_USER',
+            'DB_PASS'
+        ], silent=True),  # if environ vars are not set it's not a problem
+
+        # if need additional data from ini files - no problem
+        confy.from_ini('~/.project_sensitive_data.ini', silent=True),
+    )
 
 
 Configuration are loaded one after another, so please keep in mind
