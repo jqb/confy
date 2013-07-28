@@ -18,21 +18,6 @@ class Loader(object):
         self._file = file or './_current_directory_'
         self._syspaths = syspaths or ['.']
         self._rootpath = create_path_function(self._file)
-        self._factories = {}
-
-    # experimental api
-    def factory(self, function):
-        def invoker(*args, **kwargs):
-            return function(self, *args, **kwargs)
-        self._factories[function.__name__] = invoker
-        return invoker
-
-    def __getattr__(self, name):
-        factories = self._factories
-        if name in factories:
-            return factories[name]
-        return object.__getattribute__(self, name)
-    # end
 
     # processing configuration
     def _get_syspath(self):
