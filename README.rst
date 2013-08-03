@@ -3,7 +3,7 @@ confy
 
 Pragmatic & flexible configuration loader that makes your app settings clean and sexy.
 
-ver. 0.3.3
+ver. 0.3.4
 
 .. image:: https://badge.fury.io/py/confy.png
    :target: https://badge.fury.io/py/confy

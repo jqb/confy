@@ -1,3 +1,8 @@
+ver 0.3.4
+- internal api changes, new private / shared data mechanism added to collection
+- tests adopted, and new tests has been added
+- minor fixes to the examples has been added
+
 var 0.3.3
 - api backward incompatible changes:
   * loader as context manager is dropped
