@@ -5,8 +5,7 @@
 DBSETTINGS.update(
     host='development.localhost',
 )
-# other possibilities to do that would be:
-# DBSETTINGS.host = 'development.localhost'
+# other possibility to do that would be:
 # DBSETTINGS['host'] = 'development.localhost'
 
 
