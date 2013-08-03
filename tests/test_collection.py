@@ -218,6 +218,15 @@ class CollectionDict(unittest.TestCase):
         assert self.collection.hello == 'world'
         assert 'world' in self.collection.values()
 
+    def test_str_repr_unicode_returns_the_same(self):
+        str_ = self.collection.__str__()
+        repr_ = self.collection.__repr__()
+        unicode_ = self.collection.__unicode__()
+        assert str_ == repr_ == unicode_
+
+        expected = "<Collection: %s>" % list(self.collection.keys())
+        assert str_ == expected
+
 
 class CollectionModule(unittest.TestCase):
     def setUp(self):
