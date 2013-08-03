@@ -124,3 +124,29 @@ def split_filenames(names, abspath=None, ext=None):
             [abspath(smart_ext(s, ext=ext)) for s in name.split(',')]
         )
     return splited
+
+
+def private_attribute_name(cls, name):
+    """ Properly construct name of private variable for the given class.
+
+    :param cls: class object for which the name should be constructed
+    :param name: name of the variable
+
+    Usage::
+
+        class User(object):
+            def __init__(self, name):
+                self.__name = name
+
+
+        user = User("John")
+
+        # you can't do this
+        # user.__name
+
+        # ...but you can do this
+        user._User__name == 'John'  # => True
+        getattr(user, private_attribute_name(User, 'name')) == 'John'  # => True
+
+    """
+    return "_%s__%s" % (cls.__name__, name)
