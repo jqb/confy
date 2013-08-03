@@ -9,6 +9,8 @@ from .properties import (
     ImporterProperty, ValueProperty, LazyRootpathProperty,
 )
 
+from .utils import private_attribute_name
+
 
 class Collection(object):
 
@@ -31,37 +33,39 @@ class Collection(object):
     # end
 
 
-    # collectionize
+    # class methods
     @classmethod
-    def collectionize(cls, adict, defaults=None):
+    def _new(cls, data=None, private=None):
+        c = cls(data or {})
+        c.__dict__[private_attribute_name(cls, 'private')] = private
+        return c
+
+    @classmethod
+    def collectionize(cls, adict, private=None):
         """ Change a dict into a collection. All inner dictionaries
         are changed into collections as well.
 
         :param adict: dictionary (collections.Mapping) alike object
-        :param defaults: default attributes that will be added to all
-        new collection objects
+        :param private: shared private date for all collection objects.
         """
-
-        def new(adict):
-            c = cls(defaults or {})
-            c.update(adict)
-            return c
 
         def convert(adict):
             for key in list(adict.keys()):
                 value = adict[key]
                 if isinstance(value, Mapping):
-                    adict[key] = new(convert(value))
-            return new(adict)
+                    adict[key] = cls._new(convert(value), private)
+            return cls._new(adict, private)
 
         return convert(adict)
     # end
 
 
     def __init__(self, *args, **kwargs):
-        dict_data_key = "_%s__data" % self.__class__.__name__
+        dict_data_key = private_attribute_name(self.__class__, 'data')
+        private_data_key = private_attribute_name(self.__class__, 'private')
         self.__dict__.update({
             dict_data_key: {},
+            private_data_key: {},
         })
         self.update(*args, **kwargs)
 
@@ -78,7 +82,7 @@ class Collection(object):
 
     def __get(self, name):
         prop = self.__property(name)
-        return prop.get(self)
+        return prop.get(self, self.__private)
 
     def __raw(self, name):
         prop = self.__property(name)
@@ -100,8 +104,6 @@ class Collection(object):
 
     # support for get attribute protocol
     def __getattr__(self, name):
-        if name in self.__dict__:
-            return self.__dict__[name]
         return self.__get(name)
 
     def __setattr__(self, name, value):
@@ -205,10 +207,10 @@ class Collection(object):
 
     # Extra *Collection* methods
     def properties(self):
-        return [(name, self.__data[name]) for name in self.keys()]
+        return dict((name, self.__data[name]) for name in self.keys())
 
     def extend(self, *args, **kwargs):
-        attrs = Collection(self.properties())
+        attrs = self.__class__._new(self.properties(), self.__private)
         attrs.update(*args, **kwargs)
         return attrs
 
@@ -223,9 +225,7 @@ class Collection(object):
     # end
 
     def __str__(self):
-        return six.u('<Collection: %s>' % [
-            key for key in self.keys() if not key.startswith('_')
-        ])
+        return six.u('<Collection: %s>' % [key for key in self.keys()])
 
     __unicode__ = __repr__ = __str__
 

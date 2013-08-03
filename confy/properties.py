@@ -7,7 +7,7 @@ from .utils import Importer, create_path_function
 
 
 class BaseProperty(object):
-    def get(self, instance):
+    def get(self, instance, private=None):
         raise NotImplementedError
 
     @property
@@ -23,7 +23,7 @@ class ValueProperty(BaseProperty):
     def __init__(self, value):
         self.value = value
 
-    def get(self, instance):
+    def get(self, instance, private=None):
         return self.value
 
     @property
@@ -50,7 +50,7 @@ class InterpolationProperty(BaseProperty):
         func = getattr(attr, '__call__', lambda: attr)
         return func()
 
-    def get(self, instance):
+    def get(self, instance, private=None):
         values = dict([
             (vname, self.call_callables(instance, vname))
             for vname in self.var_names
@@ -74,7 +74,7 @@ class ImporterProperty(BaseProperty):
     def __init__(self, importer):
         self.importer = importer
 
-    def get(self, instance):
+    def get(self, instance, private=None):
         return self.importer.import_it()
 
     @property
@@ -89,7 +89,7 @@ class ImporterProperty(BaseProperty):
 
 
 class RawProperty(BaseProperty, six.text_type):
-    def get(self, instance):
+    def get(self, instance, private=None):
         return self
 
     @property
@@ -107,7 +107,7 @@ class LazyProperty(BaseProperty):
     def __init__(self, get):
         self.__get = get
 
-    def get(self, instance):
+    def get(self, instance, private=None):
         return self.__get(instance)
 
     @property
@@ -126,10 +126,10 @@ class LazyRootpathProperty(BaseProperty):
         self.path_args = path
         self.__rootpath = None
 
-    def get(self, instance):
+    def get(self, instance, private=None):
         rootpath_function = self.__rootpath
         if not rootpath_function:
-            rootpath_function = create_path_function(instance['__rootpath__'])
+            rootpath_function = create_path_function(private['__rootpath__'])
             self.__rootpath = rootpath_function
         return rootpath_function(*self.path_args)
 

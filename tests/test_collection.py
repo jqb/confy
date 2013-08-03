@@ -18,7 +18,7 @@ class NonMapping(object):
 
 class CollectionFeatures(unittest.TestCase):
     def setUp(self):
-        self.settings = confy.collection(
+        self.settings = confy.collection._new(dict(
             API = confy.collection(
                 root = 'http://fancy.com/api',
                 GET_OBJECT = '{root}/get',
@@ -30,11 +30,11 @@ class CollectionFeatures(unittest.TestCase):
             FAKE_BACKEND_MODULE = confy.lazyimport('tests.fake.backend'),
             RAW_VALUE = confy.raw('{with "raw" I can put {} as many special things as I want}'),
             URLS = confy.lazy(lambda self: "%s %s" % (self.API.GET_OBJECT, self.API.ADD_OBJECT)),
-
-            # rootpath works only in conjunction with __rootpath__ variable
-            __rootpath__ = '/path/to/project/settings/__init__.py',
             PROJECT_ROOT = confy.rootpath('..'),
-        )
+        ), private={
+            # confy.rootpath stuff won't work without __rootpath__ private variable
+            '__rootpath__': '/path/to/project/settings/__init__.py',
+        })
 
     def test_variable_interpolation_should_work_as_a_charm(self):
         API = self.settings.API

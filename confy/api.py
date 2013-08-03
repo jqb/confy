@@ -40,7 +40,7 @@ class Loader(object):
             with extrabuiltins(self._get_extrabuildins()):
                 context = do_merge({})
 
-        return Collection.collectionize(context, defaults={
+        return Collection.collectionize(context, private={
             '__rootpath__': self._file,
         })
 

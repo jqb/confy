@@ -25,16 +25,14 @@ class ConfyModuleAPI(unittest.TestCase):
 
 
 class LoaderApi(unittest.TestCase):
-    def test_merge_should_always_contain_certain_variables(self):
-        expected = [
-            '__rootpath__',
-        ]
+    def test_merge_should_not_contain_any_variables(self):
+        expected = []
         loader = confy.loader()
 
         collection = loader.merge(
             # no sources == empty collection
         )
-        assert len(collection) == 1
+        assert len(collection) == 0
 
         for name in expected:
             assert name in collection
