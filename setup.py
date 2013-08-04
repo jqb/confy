@@ -27,9 +27,6 @@ setup(
     packages=find_packages(exclude=("tests*", "examples*")),
     include_package_data = True,
     zip_safe=False,
-    install_requires = [
-        'six==1.3.0',
-    ],
 )
 
 # Usage of setup.py:
