@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 
-import six
-
+from .compat import six
 from .utils import Importer, create_path_function
 
 

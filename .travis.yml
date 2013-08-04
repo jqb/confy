@@ -9,6 +9,6 @@ install:
   - "pip install coveralls"
 script:
   - "python runtests.py tests"
-  - "coverage run --source=confy python runtests.py tests"
+  - "coverage run --source=confy runtests.py tests"
 after_success:
   - coveralls

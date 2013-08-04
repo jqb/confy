@@ -2,13 +2,11 @@
 from types import ModuleType
 from collections import MutableMapping, Mapping
 
-import six
-
+from .compat import six
 from .properties import (
     LazyProperty, RawProperty, InterpolationProperty,
     ImporterProperty, ValueProperty, LazyRootpathProperty,
 )
-
 from .utils import private_attribute_name
 
 

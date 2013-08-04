@@ -2,8 +2,7 @@
 import sys
 from os.path import join, dirname, abspath
 
-import six
-
+from .compat import six
 from .packages import importlib
 
 
