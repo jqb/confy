@@ -1,3 +1,6 @@
+ver 0.3.5
+- six dependency dropped. The lib has been added into confy.packages
+
 ver 0.3.4
 - internal api changes, new private / shared data mechanism added to collection
 - tests adopted, and new tests has been added
