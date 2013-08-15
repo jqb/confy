@@ -10,3 +10,9 @@ try:
     import six
 except ImportError:
     from .packages import six
+
+
+try:
+    from itertools import izip
+except ImportError:
+    izip = zip
