@@ -220,6 +220,10 @@ class Collection(object):
 
     def raw_values(self):
         return [self.__raw(name) for name in self.keys()]
+
+    def load(self, context):  # allows to use collection as source
+        context.update(self)
+        return context
     # end
 
     def __str__(self):

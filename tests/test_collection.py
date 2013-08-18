@@ -227,6 +227,11 @@ class CollectionDict(unittest.TestCase):
         expected = "<Collection: %s>" % list(self.collection.keys())
         assert str_ == expected
 
+    def test_collection_might_be_treated_as_source_too(self):
+        context = self.collection.load({})
+        assert context['protocol'] == 'http'
+        assert context['URL'] == 'http://something.com'
+
 
 class CollectionModule(unittest.TestCase):
     def setUp(self):

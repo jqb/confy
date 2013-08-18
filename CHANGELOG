@@ -1,6 +1,7 @@
 ver 0.3.7
 - new source reader added: env-vars directly from directory added
 - dictquery feature added - simple but yet powerful querying for dictionaries added
+- collections might be treaded as source too
 
 ver 0.3.5
 - six dependency dropped. The lib has been added into confy.packages
