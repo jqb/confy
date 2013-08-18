@@ -136,3 +136,37 @@ if configparser:
                 self.fail("No KeyError should be raise here (silent is True)")
 
             assert result == {}
+
+
+class EnvironmentDirectoryTest(unittest.TestCase):
+    def test_read_pointed_directory(self):
+        source = confy.sources.EnvironmentDirectory([
+            here('tconf', 'envvars'),
+        ])
+
+        result = source.load({})
+        assert result == {
+            'DATABASE': {
+                'NAME': 'testdb',
+                'PASSWORD': 'test',
+                'PORT': '9000',
+                'testdata': {
+                    'fixtures': 'testdata.json',
+                },
+                'USER': 'testuser',
+            },
+            'HELLO': 'world!',
+        }
+
+    def test_read_unexisted_directory_raises_error(self):
+        source = confy.sources.EnvironmentDirectory([
+            here('tconf', '_unexisted_vars_')
+        ])
+        self.assertRaises(IOError, source.load, {})
+
+    def test_spliting_path_into_tuple_works_as_a_charm(self):
+        source = confy.sources.EnvironmentDirectory([])
+        assert source._split_path('hello/world') == ('hello', 'world')
+        assert source._split_path('/hello/world') == ('hello', 'world')
+        assert source._split_path('hello/world/') == ('hello', 'world')
+        assert source._split_path('/hello/world/') == ('hello', 'world')

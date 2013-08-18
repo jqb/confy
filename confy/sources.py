@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 
+from . import dictquery
 from .utils import execfile
 
 
@@ -87,5 +88,53 @@ class INISource(BaseSource):
         except KeyError:  # cp[<key>] raises KeyError not NoSectionError
             if not self.silent:
                 raise
+
+        return context
+
+
+class EnvironmentDirectory(BaseSource):
+    def __init__(self, names, silent=False):
+        self.names = names
+        self.silent = silent
+
+    def _split_path(self, path):
+        if path.startswith(os.sep):
+            path = path[1:]
+        if path.endswith(os.sep):
+            path = path[:-1]
+        return tuple(path.split(os.sep))
+
+    def _build_composed_keys(self, dirpath):
+        pjoin = os.path.join
+        psplit = self._split_path
+
+        composed_keys = []
+        fullpaths = []
+
+        for root, dirs, files in os.walk(dirpath):
+            full_paths = [pjoin(root, filename) for filename in files]
+            relative_paths = [
+                path.replace(dirpath, '') for path in full_paths
+            ]
+            keys = [psplit(rpath) for rpath in relative_paths]
+            composed_keys.extend(keys)
+            fullpaths.extend(full_paths)
+
+        return fullpaths, composed_keys
+
+    def _read_vars(self, data, dirpath):
+        fullpaths, composed_keys = self._build_composed_keys(dirpath)
+        for fullpath, composed_key in zip(fullpaths, composed_keys):
+            with open(fullpath, 'r') as f:
+                value = str(f.read())
+                dictquery.set(data, composed_key, value)
+        return data
+
+    def load(self, context):
+        for dirpath in self.names:
+            if not os.path.exists(dirpath) and not self.silent:
+                raise IOError("No such directory: '%s'" % dirpath)
+            else:
+                context = self._read_vars(context, dirpath)
 
         return context

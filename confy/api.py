@@ -4,7 +4,7 @@ import sys
 
 from .utils import create_path_function, extrabuiltins, syspath, Importer, split_filenames
 from .collection import Collection, RawProperty, LazyProperty, Module, LazyRootpathProperty
-from .sources import ModuleSource, EnvironmentVariableSource, INISource
+from .sources import ModuleSource, EnvironmentVariableSource, INISource, EnvironmentDirectory
 
 
 class Loader(object):
@@ -63,6 +63,12 @@ class Loader(object):
     def from_ini(self, *files, **kwargs):
         return INISource(
             names=split_filenames(files, abspath=self._rootpath, ext=kwargs.get('ext', 'ini')),
+            silent=kwargs.get('silent')
+        )
+
+    def from_dirs(self, *dirs, **kwargs):
+        return EnvironmentDirectory(
+            names=split_filenames(dirs, abspath=self._rootpath, ext=None),
             silent=kwargs.get('silent')
         )
     # end
