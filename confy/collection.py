@@ -50,7 +50,10 @@ class Collection(object):
         def convert(adict):
             for key in list(adict.keys()):
                 value = adict[key]
-                if isinstance(value, Mapping):
+                if isinstance(value, cls):
+                    value = cls._new(value.properties(), private)
+                    adict[key] = convert(value)
+                elif isinstance(value, Mapping):
                     adict[key] = cls._new(convert(value), private)
             return cls._new(adict, private)
 

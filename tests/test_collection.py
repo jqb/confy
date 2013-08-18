@@ -65,6 +65,37 @@ class CollectionFeatures(unittest.TestCase):
     def test_rootpath_constructs_relatively_correct_paths(self):
         assert self.settings.PROJECT_ROOT == '/path/to/project'
 
+    def test_collectionize(self):
+        testdict = {
+            'DATABASE': {
+                'ENGINE': confy.lazyimport('tests.fake.backend.FakeBackend'),
+                'NAME': 'testdb',
+                'USER': 'test',
+                'PASSWORD': 'test',
+                'HOST': 'test.db.com',
+                'PORT': '9000',
+
+                'testdata': confy.collection({
+                    'fixtures': confy.rootpath('..', 'fixtures', 'testdata.json')
+                }),
+            },
+            'HELLO': 'world',
+        }
+
+        private = {
+            '__rootpath__': '/path/to/project/settings/__init__.py',
+        }
+        result = confy.Collection.collectionize(testdict, private=private)
+
+        assert isinstance(result.DATABASE, confy.Collection)
+        assert isinstance(result.DATABASE.testdata, confy.Collection)
+
+        private_name = confy.utils.private_attribute_name(confy.Collection, 'private')
+        assert getattr(result.DATABASE, private_name) == private
+        assert getattr(result.DATABASE.testdata, private_name) == private
+
+        assert result.DATABASE.testdata.fixtures == '/path/to/project/fixtures/testdata.json'
+
 
 class CollectionDict(unittest.TestCase):
     def setUp(self):
