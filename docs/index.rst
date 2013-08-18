@@ -52,6 +52,7 @@ All the code is hosted on github https://github.com/jqb/confy
    :maxdepth: 2
 
    tutorial
+   sources
 
 
 Indices and tables
