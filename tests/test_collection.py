@@ -172,6 +172,26 @@ class CollectionDict(unittest.TestCase):
         self.collection.update([('key2', 'value2')])
         assert 'key2' in self.collection
 
+    def test_update_with_collection_populates_collection_with_properties_not_values(self):
+        col = confy.collection(
+            name="confy",
+            version="0.3.7",
+            fullversion="{name}-{version}",
+        )
+        props = col.properties()  # returns regular dict, not collection
+        assert props['name'].__class__ == confy.ValueProperty
+        assert props['version'].__class__ == confy.ValueProperty
+        assert props['fullversion'].__class__ == confy.InterpolationProperty
+
+        existing_properties = self.collection.properties()
+        assert set(existing_properties.keys()) == set(['URL', 'protocol'])
+
+        self.collection.update(col)
+        updated_properties = self.collection.properties()
+        assert set(updated_properties.keys()) == set([
+            'URL', 'protocol', 'name', 'version', 'fullversion'
+        ])
+
     def test_setdefault(self):
         assert 'protocol' in self.collection
         result = self.collection.setdefault('protocol', 'value')

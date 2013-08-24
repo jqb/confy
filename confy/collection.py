@@ -139,19 +139,25 @@ class Collection(object):
             raise TypeError("update() takes at least 1 argument (0 given)")
 
         self = args[0]
+        cls = self.__class__
+        setvalue = self.__set
+
         other = args[1] if args_len >= 2 else ()
 
-        if isinstance(other, Mapping):
+        if isinstance(other, cls):
+            for key, prop in other.properties().items():
+                setvalue(key, prop)
+        elif isinstance(other, Mapping):
             for key in other:
-                self.__set(key, other[key])
+                setvalue(key, other[key])
         elif hasattr(other, "keys"):
             for key in other.keys():
-                self.__set(key, other[key])
+                setvalue(key, other[key])
         else:
             for key, value in other:
-                self.__set(key, value)
+                setvalue(key, value)
         for key, value in kwds.items():
-            self.__set(key, value)
+            setvalue(key, value)
 
     def setdefault(self, key, default=None):
         try:
