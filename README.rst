@@ -136,11 +136,17 @@ and where you want to keep configuration.
 
         # if need additional data from ini files - no problem
         confy.from_ini('~/.project_sensitive_data.ini', silent=True),
+
+        # additional configuration might be kept under given directory
+        # in envdir-like manner (http://cr.yp.to/daemontools/envdir.html).
+        # If settings/ directory contains "envvars" dir all the variables
+        # will be loaded into a configuration
+        confy.from_dirs('envvars', silent=True),
     )
 
 
 Configuration are loaded one after another, so please keep in mind
-that variables might be overriden.
+that variables might override each other.
 
 
 Installation
