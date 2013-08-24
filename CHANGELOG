@@ -1,3 +1,7 @@
+ver 0.3.8
+- lazy values evaluation on collection copy bug fixed
+- examples improvements
+
 ver 0.3.7
 - new source reader added: env-vars directly from directory added
 - dictquery feature added - simple but yet powerful querying for dictionaries added
