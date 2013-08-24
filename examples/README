@@ -1,4 +1,8 @@
-This folder contains examples how "confy" configuration loader might be used.
+This folder contains examples how "confy" configuration loader might
+be used.  This example explains *only* one source from which "confy"
+can read configuration - simple modules. For examples of other
+possible please take a look into documention:
+https://confy.readthedocs.org/en/latest/
 
 Contents:
 
@@ -7,3 +11,6 @@ Contents:
 
 - settings: module that contains sample configuration and explains how
   the things are working
+
+- run_example.py: simple script that shows how loaded configuration
+  might be used
