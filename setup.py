@@ -8,7 +8,8 @@ import confy
 setup(
     name='confy',
     version=confy.VERSION,
-    description='',
+    description=('Pragmatic and flexible configuration '
+                 'loader that makes your app settings clean and sexy'),
     author='Jakub Janoszek',
     author_email='kuba.janoszek@gmail.com',
     url='https://pypi.python.org/pypi/confy',
