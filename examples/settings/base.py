@@ -3,6 +3,7 @@
 # In base you suppose to define all the settings which are common for
 # all evironments. Later in other you'll override or update them.
 # Below you see few examples of "confy" features.
+import confy
 
 
 # You can use simple dictionaries. Acctualy you can use whatever types

@@ -3,7 +3,7 @@ import os
 import confy
 
 
-confy =  confy.loader(__file__)
+confy = confy.loader(__file__)
 
 
 confy.define_module(__name__, [

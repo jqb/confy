@@ -8,8 +8,10 @@ import confy
 setup(
     name='confy',
     version=confy.VERSION,
-    description=('Pragmatic and flexible configuration '
-                 'loader that makes your app settings clean and sexy'),
+    description=(
+        'Pragmatic and flexible configuration '
+        'loader that makes your app settings clean.'
+    ),
     author='Jakub Janoszek',
     author_email='kuba.janoszek@gmail.com',
     url='https://pypi.python.org/pypi/confy',
@@ -26,7 +28,7 @@ setup(
         'Programming Language :: Python :: 3.3',
     ],
     packages=find_packages(exclude=("tests*", "examples*")),
-    include_package_data = True,
+    include_package_data=True,
     zip_safe=False,
 )
 
